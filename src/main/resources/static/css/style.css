@@ -6,109 +6,145 @@ body {
     line-height: 1.6;
     color: #ffffff;
     background-color: #000000;
+    /*padding-top: 80px; !* Добавляем отступ сверху для фиксированного меню *!*/
 }
 
-/* Стили для основного контейнера с заголовком */
-.booking-header {
-    max-width: 600px;          /* Максимальная ширина блока - 600 пикселей */
-    margin: 1rem 0;            /* Внешние отступы: 1rem сверху/снизу, 0 по бокам */
-    padding: 1rem 1rem 1rem 0.1rem; /* Внутренние отступы: 1rem сверху/справа/снизу, 0.5rem слева */
-    text-align: left;          /* Выравнивание текста по левому краю */
-}
-
-/* Стили для основного заголовка h1 */
-.booking-header h1 {
-    font-size: 2.5rem;         /* Размер шрифта */
-    line-height: 1.3;          /* Межстрочный интервал 1.3 (130% от размера шрифта) */
-    color: #ffffff;            /* Цвет текста - белый */
-    margin-bottom: 0.8rem;     /* Отступ снизу 0.8rem (примерно 12.8px) */
-    font-weight: 800;          /* Жирность шрифта - bold (800) */
-    position: relative;        /* Позиционирование relative для псевдоэлемента */
-    padding-left: 1.8rem;        /* Внутренний отступ слева 1rem (16px) */
-}
-
-/* Стили для декоративной линии слева от заголовка */
-.booking-header h1:before {
-    content: "";               /* Обязательное свойство для псевдоэлементов */
-    position: absolute;        /* Абсолютное позиционирование */
-    left: 0;                   /* Позиционирование у левого края */
-    top: 0;                    /* Позиционирование у верхнего края */
-    height: 100%;              /* Высота как у родительского элемента */
-    width: 6px;                /* Ширина линии 6 пикселя */
-    background: linear-gradient(to bottom, #ffffff, #555); /* Вертикальный градиент от белого к серому */
-}
-
-/* Стили для подзаголовка */
-.subtitle {
-    font-size: 1rem;           /* Размер шрифта 1rem (16px) */
-    color: #555;               /* Цвет текста - тёмно-серый */
-    margin-top: 0.3rem;        /* Отступ сверху 0.3rem (примерно 4.8px) */
-    font-weight: 400;          /* Жирность шрифта - light (300) */
-}
-
-/* Контейнер для изображения */
-.image-girl {
+/* Навигационное меню - теперь на всю ширину */
+.navbar {
+    background-color: rgba(91, 91, 91, 0.3);
+    color: #fff;
+    padding: 1rem 2rem;
     display: flex;
-    justify-content: flex-end; /* Правильное значение для выравнивания вправо */
-    margin: 10px 0 20px 0; /* Уменьшенный отступ сверху, увеличенный снизу */
-    padding-right: 20px; /* Отступ от правого края */
+    justify-content: space-between;
+    position: fixed;
+    top: 10px; /* Отступ сверху */
+    left: 20px; /* Отступ слева */
+    right: 20px; /* Отступ справа */
+    width: calc(100% - 40px); /* Компенсируем отступы по бокам */
+    box-sizing: border-box;
+    z-index: 1000;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    margin: 0;
+    border-radius: 40px; /* Закругление углов */
 }
 
-/* Стили для самого изображения */
-.image-girl img {
-    width: 350px; /* Немного уменьшенный размер */
-    height: 350px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Исправленные значения тени */
-    margin-top: -30px; /* Поднимаем изображение выше */
-}
-
-/* Адаптивность для мобильных */
-@media (max-width: 768px) {
-
-
-
-    .image-girl img {
-        width: 250px;
-        height: 250px;
-        margin-top: -20px;
-    }
-
-    .booking-header {
-        padding: 1rem;
-        max-width: 100%;
-    }
-
-    .booking-header h1 {
-        font-size: 1.8rem;
-        padding-left: 1rem;
-    }
-}
+/* Контейнер основного контента */
 .container {
     width: 80%;
     margin: 0 auto;
     padding: 2rem 0;
     min-height: 70vh;
+    margin-top: 20px; /* Добавляем отступ от меню */
 }
 
-/* Навигационное меню */
-.navbar {
+/* Заголовок бронирования - добавляем больше отступа сверху */
+.booking-header {
+    max-width: 600px;
+    margin: 3rem 0 2rem 0; /* Увеличиваем отступ сверху */
+    padding: 1.5rem 1.5rem 1.5rem 0.1rem;
+    text-align: left;
+}
 
-    background-color: rgba(91, 91, 91, 0.3); /* Полупрозрачный чёрный */
-    color: #fff;
-    padding: 1rem 2rem;
+/* Остальные стили остаются без изменений */
+.booking-header h1 {
+    font-size: 2.5rem;
+    line-height: 1.3;
+    color: #ffffff;
+    margin-bottom: 0.8rem;
+    font-weight: 800;
+    position: relative;
+    padding-left: 1.8rem;
+}
+
+.booking-header h1:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 6px;
+    background: linear-gradient(to bottom, #ffffff, #555);
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 0.3rem;
+    font-weight: 400;
+}
+
+.image-girl {
     display: flex;
-    justify-content: space-between;
-    position: sticky;  /* Делаем меню "липким" */
-    top: 0;           /* Прилипает к верхнему краю */
-    z-index: 1000;    /* Убедимся, что меню поверх других элементов */
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 25px; /* Закругление углов */
-    backdrop-filter: blur(5px); /* Размытие фона (опционально) */
-    margin: 10px; /* Отступ от краёв (если нужно) */
+    justify-content: flex-end;
+    margin: 10px 0 20px 0;
+    padding-right: 20px;
+}
+
+.image-girl img {
+    width: 350px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top: -80px;
+    margin-right: -120px;
+}
+
+/* Новые стили */
+.about-section {
+    display: flex;
+    align-items: center;  /* Выравниваем по вертикали */
+    gap: 40px;  /* Расстояние между текстом и изображением */
+    margin-top: 30px;
+}
+
+.text-about-us {
+    flex: 1;  /* Занимает доступное пространство */
+}
+
+.text-about-us h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.text-about-us p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    color: #ddd;
+}
+
+.location {
+    font-weight: bold;
+    color: #fff !important;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .about-section {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .text-about-us {
+        order: 2;  /* Текст после изображения на мобильных */
+    }
+
+    .image-girl {
+        order: 1;
+        margin-right: 0;
+        margin-top: 0;
+    }
+
+    .image-girl img {
+        width: 280px;
+        height: 280px;
+        margin-right: 0;
+    }
 }
 
 .logo {
@@ -138,22 +174,26 @@ body {
     color: #ccc;
 }
 
-/* Подвал */
 .footer {
-    background-color: rgba(91, 91, 91, 0.3); /* Полупрозрачный чёрный */
+    background-color: rgba(91, 91, 91, 0.3); /* Полупрозрачный фон */
     color: #fff;
     padding: 1.5rem 0;
     text-align: center;
-    border-radius: 40px; /* Закругление углов */
+    border-radius: 50px;
+    width: calc(100% - 40px); /* Аналогично навбару */
+    margin: 3px auto ; /* Отступы сверху/снизу и автоматические по бокам */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень как у навбара */
+    backdrop-filter: blur(5px); /* Размытие фона */
+    box-sizing: border-box; /* Учитываем padding в ширине */
 }
 
 .footer-content {
     width: 80%;
     margin: 0 auto;
+    padding: 0 20px; /* Добавляем боковые отступы для контента */
 }
 
 .footer p {
-
     margin: 0.5rem 0;
     color: #ffffff;
     font-size: 0.9rem;
@@ -161,6 +201,27 @@ body {
 
 /* Адаптивность */
 @media (max-width: 768px) {
+    body {
+        padding-top: 120px; /* Больший отступ для мобильных */
+    }
+
+    .image-girl img {
+        width: 250px;
+        height: 250px;
+        margin-top: -20px;
+    }
+
+    .booking-header {
+        padding: 1rem;
+        max-width: 100%;
+        margin: 2rem 0 1rem 0; /* Адаптируем отступы */
+    }
+
+    .booking-header h1 {
+        font-size: 1.8rem;
+        padding-left: 1rem;
+    }
+
     .navbar {
         flex-direction: column;
         padding: 1rem;

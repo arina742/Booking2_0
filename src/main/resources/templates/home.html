@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: head">
+  <title></title>
 </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
@@ -9,9 +10,18 @@
   <div class="booking-header">
     <h1>Бронируйте место в коворкинге — без звонков и ожидания</h1>
   </div>
-  
-  <div class="image-girl">
-    <img src="/images/girl_with_hurt.jpeg" alt="Girl with hurt">
+
+  <div class="about-section">  <!-- Новый контейнер -->
+    <div class="text-about-us">
+      <h2>Coworking Space — коворкинг для работы и вдохновения</h2>
+      <p>Пространство с удобными рабочими местами, быстрым Wi-Fi, переговорками и хорошим кофе. Здесь можно сосредоточиться, найти единомышленников или просто продуктивно провести время в комфортной атмосфере.</p>
+      <p>Приходи работать, общаться и создавать!</p>
+      <p class="location">📍 Санкт-Петербург</p>
+    </div>
+
+    <div class="image-girl">
+      <img src="/images/girl_with_hurt.jpeg" alt="Girl with hurt">
+    </div>
   </div>
 </main>
 <div th:replace="fragments/footer :: footer"></div>
