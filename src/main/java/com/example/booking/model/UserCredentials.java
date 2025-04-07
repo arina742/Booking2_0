@@ -7,7 +7,6 @@ public class UserCredentials {
     public UserCredentials(){
         
     }
-
     public int getId() {
         return id;
     }
