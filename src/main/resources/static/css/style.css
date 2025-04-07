@@ -6,7 +6,6 @@ body {
     line-height: 1.6;
     color: #ffffff;
     background-color: #000000;
-    /*padding-top: 80px; !* Добавляем отступ сверху для фиксированного меню *!*/
 }
 
 /* Навигационное меню - теперь на всю ширину */
@@ -73,6 +72,56 @@ body {
     color: #555;
     margin-top: 0.3rem;
     font-weight: 400;
+}
+
+.button-booking {
+    display: flex;/* Делаем кнопку flex-контейнером для удобного выравнивания содержимого */
+    justify-content: center; /* Выравниваем содержимое по горизонтали (по центру) */
+    align-items: center;/* Выравниваем содержимое по вертикали (по центру) */
+    background-color: #4e4c4c;/* Серый цвет фона кнопки */
+    color: white;
+    border-radius: 30px; /* Закругление углов на 30 пикселей */
+    padding: 16px 32px; /* Внутренние отступы: 16px сверху/снизу, 32px слева/справа */
+    font-size: 18px; /* Размер шрифта 18 пикселей */
+    font-weight: 600;
+    cursor: pointer;
+    margin: 10px 0 10px 0;
+    border: none;
+    text-decoration: none;
+}
+
+.button-booking:hover {
+    background-color: #3e3e3e; /* Темно-серый цвет фона при наведении */
+    transform: translateY(-2px) scale(1.05);
+}
+/* Чтобы ссылка занимала нужную ширину */
+a.button-booking {
+    width: fit-content;
+}
+
+.button-about {
+    display: flex;/* Делаем кнопку flex-контейнером для удобного выравнивания содержимого */
+    justify-content: center; /* Выравниваем содержимое по горизонтали (по центру) */
+    align-items: center;/* Выравниваем содержимое по вертикали (по центру) */
+    background-color: #4e4c4c;/* Серый цвет фона кнопки */
+    color: white;
+    border-radius: 30px; /* Закругление углов на 30 пикселей */
+    padding: 16px 32px; /* Внутренние отступы: 16px сверху/снизу, 32px слева/справа */
+    font-size: 18px; /* Размер шрифта 18 пикселей */
+    font-weight: 600;
+    cursor: pointer;
+    margin: 10px auto;
+    border: none;
+    text-decoration: none;
+}
+
+.button-about:hover {
+    background-color: #3e3e3e; /* Темно-серый цвет фона при наведении */
+    transform: translateY(-2px) scale(1.05);
+}
+/* Чтобы ссылка занимала нужную ширину */
+a.button-about {
+    width: fit-content;
 }
 
 .image-girl {
