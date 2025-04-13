@@ -2,9 +2,13 @@ package com.example.booking.services;
 
 import com.example.booking.UserCredentialsRepository;
 import com.example.booking.model.UserCredentials;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
     private final UserCredentialsRepository repository;
+
+
 
     public UserService(UserCredentialsRepository repository) {
         this.repository = repository;

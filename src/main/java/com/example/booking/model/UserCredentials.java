@@ -8,12 +8,11 @@ import jakarta.persistence.*;
 public class UserCredentials {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(unique = true, nullable = false, length = 50) // Логин уникален и обязателен
+    @Column// Логин уникален и обязателен
     private String login;
 
-    @Column(nullable = false) // Пароль обязателен
+    @Column // Пароль обязателен
     private String password;
     public UserCredentials(){
         

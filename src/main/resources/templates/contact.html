@@ -6,8 +6,16 @@
 <div th:replace="fragments/header :: header"></div>
 
 <main class="container">
-    <h1>Контакты</h1>
-    <p>Свяжитесь с нами для получения дополнительной информации.</p>
+    <h1>Вход в систему</h1>
+
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label for="username">Логин:</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
 </main>
 
 <div th:replace="fragments/footer :: footer"></div>

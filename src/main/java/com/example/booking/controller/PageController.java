@@ -32,4 +32,10 @@ public class PageController {
         model.addAttribute("pageTitle", "Бронирование");
         return "booking";
     }
+
+    @GetMapping("/login")
+    public String login(Model model) {
+        model.addAttribute("pageTitle", "Вход");
+        return "login";
+    }
 }
