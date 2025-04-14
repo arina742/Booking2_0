@@ -38,4 +38,10 @@ public class PageController {
         model.addAttribute("pageTitle", "Вход");
         return "login";
     }
+
+    @GetMapping("/registration")
+    public String registration(Model model) {
+        model.addAttribute("pageTitle", "Регистрация");
+        return "registration";
+    }
 }

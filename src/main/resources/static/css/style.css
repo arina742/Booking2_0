@@ -201,6 +201,21 @@ a.button {
     margin: 7px auto; /* Вот здесь добавлены отступы */
 }
 
+#pass2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;  /* Добавлено */
+}
+
+#pass2 input {
+    border: 1px solid black;  /* Исправлено (было пропущено '1px solid') */
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    width: 60%;  /* Добавлено */
+    height: 1.5rem;
+    margin: 7px auto; /* Вот здесь добавлены отступы */
+}
+
 .register-link {
     margin-top: 1.5rem;
     text-align: center;

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head">
+    <title></title>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<main class="container">
+    <form action="/registration" method="post">
+        <div class="login-form">
+            <h1>Регистрация</h1>
+            <!-- Переключатель между пользователем и администратором -->
+            <div class="form-group switch-group">
+                <label class="switch">
+                    <input type="checkbox" id="loginTypeToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span id="loginTypeLabel">Вход для пользователя</span>
+            </div>
+
+            <div class="form-group" id="log">
+                <input type="text" id="username" name="username" placeholder="Введите ваш логин" required>
+            </div>
+
+            <div class="form-group" id="pass">
+                <input type="password" id="passwordReg1" name="password" placeholder="Введите ваш пароль" required>
+            </div>
+
+            <div class="form-group" id="pass2">
+                <input type="password" id="passwordReg2" name="password2" placeholder="Введите ваш пароль повторно" required>
+            </div>
+
+            <button type="submit" class="button button-login">Зарегистрироваться</button>
+<!--            <div class="register-link">-->
+<!--                Еще не зарегистрированы? <a href="/about">Создать аккаунт</a>-->
+<!--            </div>-->
+
+            <!-- Вывод разных ошибок -->
+            <div th:if="${param.loginError}" class="error-message">
+                Пользователь с таким логином уже существует!
+            </div>
+            <div th:if="${param.passwordError}" class="error-message">
+                Пароли не совпадают!
+            </div>
+        </div>
+    </form>
+</main>
+
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
+
+<script>
+    document.getElementById('loginTypeToggle').addEventListener('change', function() {
+        const label = document.getElementById('loginTypeLabel');
+        if (this.checked) {
+            label.textContent = 'Вход для администратора';
+            // Здесь можно добавить дополнительную логику для админского входа
+        } else {
+            label.textContent = 'Вход для пользователя';
+            // Здесь можно добавить дополнительную логику для пользовательского входа
+        }
+    });
+</script>
