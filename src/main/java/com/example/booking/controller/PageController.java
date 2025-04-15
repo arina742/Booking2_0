@@ -15,10 +15,10 @@ public class PageController {
         return "home";
     }
 
-    @GetMapping("/about")
-    public String about(Model model) {
-        model.addAttribute("pageTitle", "О нас");
-        return "about";
+    @GetMapping("/photo")
+    public String photo(Model model) {
+        model.addAttribute("pageTitle", "Галерея");
+        return "photo";
     }
 
     @GetMapping("/contact")

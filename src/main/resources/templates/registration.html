@@ -20,7 +20,7 @@
             </div>
 
             <div class="form-group" id="log">
-                <input type="text" id="username" name="username" placeholder="Введите ваш логин" required>
+                <input type="text" id="username" name="username" placeholder="Введите почту" required>
             </div>
 
             <div class="form-group" id="pass">
@@ -33,10 +33,10 @@
 
             <button type="submit" class="button button-login">Зарегистрироваться</button>
             <!-- Вывод разных ошибок -->
-            <div th:if="${param.loginError}" class="error-message">
+            <div th:if="${param.error}" class="error-message">
                 Пользователь с таким логином уже существует!
             </div>
-            <div th:if="${param.passwordError}" class="error-message">
+            <div th:if="${param.error}" class="error-message">
                 Пароли не совпадают!
             </div>
         </div>
