@@ -1,6 +1,7 @@
 package com.example.booking.controller;
 
 import com.example.booking.repositories.UserRepository;
+import com.example.booking.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class RegistrationController {
 
     @Autowired
-    private UserRepository userRepository;
+    private AuthService authService;
 
     @PostMapping("/registration")
     public String registration(
@@ -26,7 +27,7 @@ public class RegistrationController {
             return "registration";
         }
 
-        boolean isRegistered = userRepository.existsByLogin(username);
+        boolean isRegistered = authService.register(username, password);
        if (!isRegistered) {
             model.addAttribute("error", "Пользователь с таким именем уже существует!");
             return "registration";

@@ -8,7 +8,9 @@ import jakarta.persistence.*;
 public class UserCredentials {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // For auto-increment
     private int id;
+
     @Column// Логин уникален и обязателен
     private String login;
 

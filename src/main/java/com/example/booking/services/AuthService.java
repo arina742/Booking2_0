@@ -27,6 +27,6 @@ public class AuthService {
         String hashPassword = argon2.hash(2, 65536, 1, password.toCharArray());
         UserCredentials newUser = new UserCredentials(login, hashPassword);
         userRepository.save(newUser);
-        return false;
+        return true;
     }
 }
