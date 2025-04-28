@@ -16,7 +16,7 @@ public class AuthController {
     @PostMapping("/login")
     public String handleLogin(@RequestParam String username,@RequestParam String password) {
         if(authService.authenticate(username, password)) {
-            return "redirect:/about";
+            return "redirect:/user";
         } else {
             return "redirect:/login?error";
         }

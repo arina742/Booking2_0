@@ -1,19 +1,118 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: head">
+
 </head>
+
 <body>
 <div th:replace="fragments/header :: header"></div>
 
 <main class="container">
+  <h1 class="my-4">Бронирование</h1>
 
-  <h1>Бронирование</h1>
-  <p>Забронируйте рабочее место в нашем коворкинге.</p>
-  <div class="image-girl">
-    <img src="/images/girl_with_hurt.jpeg" alt="Girl with hurt">
+  <div class="booking-section">
+    <div class="auth-message">
+      <h3>Требуется авторизация</h3>
+      <p>Для бронирования места необходимо <a th:href="@{/login}">войти</a> в систему</p>
+    </div>
+
+    <h3>Доступные рабочие места</h3>
+    <div class="space-grid">
+      <!-- Рабочее место -->
+      <div class="space-card">
+        <img th:src="@{/images/place2.jpeg}" class="space-img" alt="Рабочее место">
+        <div class="space-body">
+          <h4>Рабочее место</h4>
+          <p>Открытая зона, монитор 24", розетки</p>
+          <p class="price">200 ₽/час</p>
+
+          <div class="time-slots">
+            <div class="time-slot">10:00-12:00</div>
+            <div class="time-slot booked">12:00-14:00</div>
+            <div class="time-slot">14:00-16:00</div>
+            <div class="time-slot">16:00-18:00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Переговорная -->
+      <div class="space-card">
+        <img th:src="@{/images/place3.jpeg}" class="space-img" alt="Переговорная">
+        <div class="space-body">
+          <h4>Переговорная</h4>
+          <p>До 6 человек, телевизор, доска</p>
+          <p class="price">1200 ₽/час</p>
+
+          <div class="time-slots">
+            <div class="time-slot">09:00-11:00</div>
+            <div class="time-slot">11:00-13:00</div>
+            <div class="time-slot booked">13:00-15:00</div>
+            <div class="time-slot">15:00-17:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="booking-form" id="bookingForm">
+      <h3>Забронировать место</h3>
+      <form th:action="@{/booking}" method="post">
+        <div class="mb-3">
+          <label class="form-label">Выбранное место</label>
+          <input type="text" class="form-control" id="selectedPlace" readonly>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Выбранное время</label>
+          <input type="text" class="form-control" id="selectedTime" readonly>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Дата бронирования</label>
+          <input type="date" class="form-control" name="bookingDate" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Дополнительные пожелания</label>
+          <textarea class="form-control" name="comments" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Подтвердить бронь</button>
+      </form>
+    </div>
   </div>
 </main>
 
 <div th:replace="fragments/footer :: footer"></div>
+
+<script>
+  // Выбор временного слота
+  document.querySelectorAll('.time-slot:not(.booked)').forEach(slot => {
+    slot.addEventListener('click', function() {
+      // Снимаем выделение со всех слотов
+      document.querySelectorAll('.time-slot').forEach(s => {
+        s.classList.remove('selected');
+      });
+
+      // Выделяем текущий
+      this.classList.add('selected');
+
+      // Получаем данные о месте и времени
+      const placeName = this.closest('.space-body').querySelector('h4').textContent;
+      const placePrice = this.closest('.space-body').querySelector('.price').textContent;
+      const timeSlot = this.textContent;
+
+      // Заполняем форму
+      document.getElementById('selectedPlace').value = `${placeName} (${placePrice})`;
+      document.getElementById('selectedTime').value = timeSlot;
+
+      // Показываем форму
+      document.getElementById('bookingForm').style.display = 'block';
+    });
+  });
+
+  // Устанавливаем минимальную дату (сегодня)
+  const today = new Date().toISOString().split('T')[0];
+  document.querySelector('input[type="date"]').min = today;
+</script>
 </body>
 </html>

@@ -33,11 +33,11 @@
 
             <button type="submit" class="button button-login">Зарегистрироваться</button>
             <!-- Вывод разных ошибок -->
-            <div th:if="${param.error}" class="error-message">
-                Пользователь с таким логином уже существует!
-            </div>
-            <div th:if="${param.error}" class="error-message">
+            <div th:if="${error == 'Пароли не совпадают!'}" class="error-message">
                 Пароли не совпадают!
+            </div>
+            <div th:if="${error == 'Пользователь с таким логином уже существует!'}" class="error-message">
+                Пользователь с таким логином уже существует!
             </div>
         </div>
     </form>

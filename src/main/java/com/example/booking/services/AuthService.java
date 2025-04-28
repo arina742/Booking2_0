@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class AuthService {
-        final String REG_EMAIL = "^[a-zA-Z0-9._+&*-]+@[a-zA-Z0-9.-]\\.[a-zA-Z]{2,}$";
+    final String REG_EMAIL = "^[a-zA-Z0-9._+&*-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
     @Autowired
     private UserRepository userRepository;
@@ -28,9 +28,12 @@ public class AuthService {
     public boolean register(String login, String password) {
         UserCredentials userCredentials = userRepository.findByLogin(login);
         if (userRepository.existsByLogin(login)) return false;
-        Pattern pattern = Pattern.compile(REG_EMAIL);
-        Matcher matcher = pattern.matcher(login);
-        if(!matcher.matches()) return false;
+
+       // Проверка email через regex
+        if (!Pattern.matches(REG_EMAIL, login)) {
+            return false; // Неправильный формат email
+        }
+
         String hashPassword = argon2.hash(2, 65536, 1, password.toCharArray());
         UserCredentials newUser = new UserCredentials(login, hashPassword);
         userRepository.save(newUser);

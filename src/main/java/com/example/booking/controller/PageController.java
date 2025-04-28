@@ -44,4 +44,10 @@ public class PageController {
         model.addAttribute("pageTitle", "Регистрация");
         return "registration";
     }
+
+    @GetMapping("/user")
+    public String user(Model model) {
+        model.addAttribute("pageTitle", "Страница пользователя");
+        return "user";
+    }
 }

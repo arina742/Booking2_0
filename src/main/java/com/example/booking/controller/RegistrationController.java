@@ -24,15 +24,15 @@ public class RegistrationController {
     {
         if(!password.equals(password2)){
             model.addAttribute("error", "Пароли не совпадают");
-            return "redirect:/registration?error";
+            return "registration";
         }
         boolean isRegistered = authService.register(username, password);
 
         if (!isRegistered) {
             model.addAttribute("error", "Пользователь с таким именем уже существует!");
-           return "redirect:/registration?error";
+           return "registration";
         }
 
-        return "redirect:/login"; // Перенаправляем на страницу входа
+        return  "redirect:/login"; // Перенаправляем на страницу входа
     }
 }
