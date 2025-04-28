@@ -6,8 +6,51 @@
 <div th:replace="fragments/header :: header"></div>
 
 <main class="container">
-    <h1>Аккаунт пользователя</h1>
 
+    <div class="header">
+        <h1>Личный кабинет</h1>
+        <div class="user-info">
+            <p>+7 912 345-67-89</p>
+        </div>
+    </div>
+
+    <div class="booking-history">
+        <h2>История бронирований</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Дата и время</th>
+                <th>Место</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>#12345</td>
+                <td>15.05.2024, 10:00 — 18:00</td>
+                <td>Рабочее место №5 (Зона тишины)</td>
+                <td class="status-active">Активно</td>
+                <td><button class="btn btn-cancel">Отменить</button></td>
+            </tr>
+            <tr>
+                <td>#12344</td>
+                <td>10.05.2024, 09:00 — 17:00</td>
+                <td>Переговорная №3</td>
+                <td class="status-cancelled">Отменено</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>#12340</td>
+                <td>05.05.2024, 14:00 — 20:00</td>
+                <td>Рабочее место №12 (Общая зона)</td>
+                <td>Завершено</td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
 </main>
 
