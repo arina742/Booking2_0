@@ -36,15 +36,14 @@ public class AuthService {
         return true;
     }
 
-    public String getFormatNumber(String login) {
+    public static String getFormatNumber(String login) {
         login = login.replaceAll("[^0-9]", "");
         if(login.length() == 10) {
             login = "+7"+login;
         } else if(login.length() == 11) {
             login = "+7"+login.substring(1);
-        }else if(login.length() == 12) {
-            login = "+7"+login.substring(2);
         }
+
         return login;
     }
 }

@@ -1,14 +1,22 @@
 package com.example.booking.controller;
 
+import com.example.booking.model.Booking;
+import com.example.booking.services.AuthService;
+import jakarta.servlet.http.HttpSession;
+import com.example.booking.repositories.BookingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.security.Principal;
+import java.util.List;
 
 
 @Controller
 public class PageController {
-
+    @Autowired
+    private BookingRepository bookingRepository;
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("pageTitle", "Главная страница");
@@ -46,8 +54,26 @@ public class PageController {
     }
 
     @GetMapping("/user")
-    public String user(Model model) {
-        model.addAttribute("pageTitle", "Страница пользователя");
+    public String user(Model model, HttpSession session) {
+        // Получаем логин из сессии
+        String login = (String) session.getAttribute("userLogin");
+
+        if (login == null) {
+            return "redirect:/login"; // Перенаправляем если не авторизован
+        }
+
+        try {
+            login = AuthService.getFormatNumber(login);
+            List<Booking> bookings = bookingRepository.findBookingsByLogin(login);
+            model.addAttribute("bookings", bookings);
+            model.addAttribute("phoneNumber", login); // Используем login как phoneNumber
+        } catch (Exception e) {
+            model.addAttribute("error", "Ошибка при загрузке данных");
+            // Логирование ошибки
+            System.err.println("Ошибка при загрузке бронирований: " + e.getMessage());
+            e.printStackTrace();
+        }
+
         return "user";
     }
 }

@@ -2,6 +2,8 @@ package com.example.booking.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -16,7 +18,7 @@ public class Booking {
     private String login;
 
     @Column
-    private Date date;
+    private LocalDateTime date;
 
     @Column
     private String object;
@@ -25,7 +27,7 @@ public class Booking {
     private int hours;
 
     @Column
-    private double price;
+    private BigDecimal price;
 
     @Column
     private String status;
@@ -33,7 +35,7 @@ public class Booking {
     public Booking() {
 
     }
-    public Booking(String login, Date date, String object, int hours, double price, String status) {
+    public Booking(String login, LocalDateTime  date, String object, int hours, BigDecimal  price, String status) {
         this.login = login;
         this.date = date;
         this.object = object;
@@ -58,11 +60,11 @@ public class Booking {
         this.login = login;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime  date) {
         this.date = date;
     }
 
@@ -82,11 +84,11 @@ public class Booking {
         this.hours = hours;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

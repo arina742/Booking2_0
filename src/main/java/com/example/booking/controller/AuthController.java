@@ -1,6 +1,7 @@
 package com.example.booking.controller;
 
 import com.example.booking.services.AuthService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthController {
 
     @Autowired
-    public AuthService authService;
+    private AuthService authService;
 
     @PostMapping("/login")
-    public String handleLogin(@RequestParam String username,@RequestParam String password) {
-        if(authService.authenticate(username, password)) {
+    public String handleLogin(@RequestParam String username,
+                              @RequestParam String password,
+                              HttpSession session) {
+        if (authService.authenticate(username, password)) {
+            session.setAttribute("userLogin", username); // Сохраняем логин в сессию
             return "redirect:/user";
         } else {
             return "redirect:/login?error";
