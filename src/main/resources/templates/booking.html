@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: head">
-
 </head>
 
 <body>
 <div th:replace="fragments/header :: header"></div>
 
 <main class="container">
-  <h1 class="my-4">Бронирование</h1>
+  <div class="alert alert-success" id="successMessage" style="display: none;">
+    Бронирование успешно создано!
+  </div>
 
   <div class="booking-section">
-    <div class="auth-message">
+    <div class="auth-message" th:unless="${session.login != null}">
       <h3>Требуется авторизация</h3>
       <p>Для бронирования места необходимо <a th:href="@{/login}">войти</a> в систему</p>
     </div>
 
-    <h3>Доступные рабочие места</h3>
+
+    <div class="left-indent">
+      <h3>Доступные рабочие места</h3>
+
+      <!-- Выбор даты -->
+      <div class="date-picker">
+        <label for="bookingDate">Выберите дату:</label>
+        <input type="date" id="bookingDate" name="bookingDate" required>
+      </div>
+    </div>
+
     <div class="space-grid">
       <!-- Рабочее место -->
       <div class="space-card">
@@ -26,12 +37,31 @@
           <p>Открытая зона, монитор 24", розетки</p>
           <p class="price">200 ₽/час</p>
 
-          <div class="time-slots">
-            <div class="time-slot">10:00-12:00</div>
-            <div class="time-slot booked">12:00-14:00</div>
-            <div class="time-slot">14:00-16:00</div>
-            <div class="time-slot">16:00-18:00</div>
+          <!-- Выбор диапазона времени -->
+          <div class="time-range-selector">
+            <h5>Выберите время:</h5>
+            <div class="time-range-controls">
+              <div>
+                <label for="startTime">Начало:</label>
+                <select id="startTime" class="time-input">
+                  <option value="">-- Выберите --</option>
+                  <!-- Опции будут заполняться динамически -->
+                </select>
+              </div>
+              <div>
+                <label for="endTime">Конец:</label>
+                <select id="endTime" class="time-input" disabled>
+                  <option value="">-- Надо выбрать начало --</option>
+                </select>
+              </div>
+            </div>
+            <div class="time-range-info" id="timeRangeInfo" style="display: none;">
+              Вы выбрали: <span id="selectedRange"></span>
+            </div>
           </div>
+
+          <!-- Кнопка бронирования -->
+          <button class="book-btn" id="bookBtn1">Забронировать</button>
         </div>
       </div>
 
@@ -43,41 +73,33 @@
           <p>До 6 человек, телевизор, доска</p>
           <p class="price">1200 ₽/час</p>
 
-          <div class="time-slots">
-            <div class="time-slot">09:00-11:00</div>
-            <div class="time-slot">11:00-13:00</div>
-            <div class="time-slot booked">13:00-15:00</div>
-            <div class="time-slot">15:00-17:00</div>
+          <!-- Выбор диапазона времени -->
+          <div class="time-range-selector">
+            <h5>Выберите время:</h5>
+            <div class="time-range-controls">
+              <div>
+                <label for="startTime2">Начало:</label>
+                <select id="startTime2" class="time-input">
+                  <option value="">-- Выберите --</option>
+                  <!-- Опции будут заполняться динамически -->
+                </select>
+              </div>
+              <div>
+                <label for="endTime2">Конец:</label>
+                <select id="endTime2" class="time-input" disabled>
+                  <option value="">-- Надо выбрать начало --</option>
+                </select>
+              </div>
+            </div>
+            <div class="time-range-info" id="timeRangeInfo2" style="display: none;">
+              Вы выбрали: <span id="selectedRange2"></span>
+            </div>
           </div>
+
+          <!-- Кнопка бронирования -->
+          <button class="book-btn" id="bookBtn2">Забронировать</button>
         </div>
       </div>
-    </div>
-
-    <div class="booking-form" id="bookingForm">
-      <h3>Забронировать место</h3>
-      <form th:action="@{/booking}" method="post">
-        <div class="mb-3">
-          <label class="form-label">Выбранное место</label>
-          <input type="text" class="form-control" id="selectedPlace" readonly>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Выбранное время</label>
-          <input type="text" class="form-control" id="selectedTime" readonly>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Дата бронирования</label>
-          <input type="date" class="form-control" name="bookingDate" required>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Дополнительные пожелания</label>
-          <textarea class="form-control" name="comments" rows="3"></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Подтвердить бронь</button>
-      </form>
     </div>
   </div>
 </main>
@@ -85,34 +107,238 @@
 <div th:replace="fragments/footer :: footer"></div>
 
 <script>
-  // Выбор временного слота
-  document.querySelectorAll('.time-slot:not(.booked)').forEach(slot => {
-    slot.addEventListener('click', function() {
-      // Снимаем выделение со всех слотов
-      document.querySelectorAll('.time-slot').forEach(s => {
-        s.classList.remove('selected');
-      });
-
-      // Выделяем текущий
-      this.classList.add('selected');
-
-      // Получаем данные о месте и времени
-      const placeName = this.closest('.space-body').querySelector('h4').textContent;
-      const placePrice = this.closest('.space-body').querySelector('.price').textContent;
-      const timeSlot = this.textContent;
-
-      // Заполняем форму
-      document.getElementById('selectedPlace').value = `${placeName} (${placePrice})`;
-      document.getElementById('selectedTime').value = timeSlot;
-
-      // Показываем форму
-      document.getElementById('bookingForm').style.display = 'block';
-    });
-  });
+  // Все возможные часы для бронирования
+  const ALL_HOURS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
+    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00'];
 
   // Устанавливаем минимальную дату (сегодня)
   const today = new Date().toISOString().split('T')[0];
-  document.querySelector('input[type="date"]').min = today;
+  document.getElementById('bookingDate').min = today;
+  document.getElementById('bookingDate').value = today;
+
+  // DOM элементы
+  const startTime1 = document.getElementById('startTime');
+  const endTime1 = document.getElementById('endTime');
+  const timeRangeInfo1 = document.getElementById('timeRangeInfo');
+  const selectedRange1 = document.getElementById('selectedRange');
+  const bookBtn1 = document.getElementById('bookBtn1');
+
+  const startTime2 = document.getElementById('startTime2');
+  const endTime2 = document.getElementById('endTime2');
+  const timeRangeInfo2 = document.getElementById('timeRangeInfo2');
+  const selectedRange2 = document.getElementById('selectedRange2');
+  const bookBtn2 = document.getElementById('bookBtn2');
+
+  const bookingDate = document.getElementById('bookingDate');
+  const successMessage = document.getElementById('successMessage');
+
+  // Получить текущее время в формате "HH:00"
+  function getCurrentHour() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    return `${hours}:00`;
+  }
+
+  // Загрузить занятые часы для выбранной даты
+  async function loadBookedHours(date) {
+    try {
+      const response = await fetch(`/api/bookings?date=${date}`);
+      if (!response.ok) throw new Error('Ошибка загрузки данных');
+      return await response.json();
+    } catch (error) {
+      console.error('Ошибка:', error);
+      return [];
+    }
+  }
+
+  // Получить доступные часы (исключая занятые и прошедшие для сегодня)
+  function getAvailableHours(bookedHours, selectedDate) {
+    const currentHour = getCurrentHour();
+    const isToday = selectedDate === today;
+
+    // Если сегодня, фильтруем часы начиная с текущего
+    const filteredHours = isToday
+            ? ALL_HOURS.filter(hour => hour >= currentHour)
+            : ALL_HOURS;
+
+    // Исключаем занятые часы
+    return filteredHours.filter(hour => !bookedHours.includes(hour));
+  }
+
+  // Заполнить select доступными часами
+  function fillTimeSelect(selectElement, availableHours) {
+    selectElement.innerHTML = '<option value="">-- Выберите --</option>';
+    availableHours.forEach(hour => {
+      selectElement.innerHTML += `<option value="${hour}">${hour}</option>`;
+    });
+  }
+
+  // Обновить доступные часы при изменении даты
+  bookingDate.addEventListener('change', async function() {
+    const selectedDate = this.value;
+    const bookedHours = await loadBookedHours(selectedDate);
+    const availableHours = getAvailableHours(bookedHours, selectedDate);
+
+    // Заполнить оба select'а начала времени
+    fillTimeSelect(startTime1, availableHours);
+    fillTimeSelect(startTime2, availableHours);
+
+    // Сбросить выбор конца времени
+    endTime1.innerHTML = '<option value="">-- Выберите --</option>';
+    endTime1.disabled = true;
+    endTime2.innerHTML = '<option value="">-- Выберите --</option>';
+    endTime2.disabled = true;
+
+    hideAllBookButtons();
+  });
+
+  // Скрыть все кнопки бронирования
+  function hideAllBookButtons() {
+    bookBtn1.style.display = 'none';
+    bookBtn2.style.display = 'none';
+    timeRangeInfo1.style.display = 'none';
+    timeRangeInfo2.style.display = 'none';
+  }
+
+  // Инициализация выбора времени для первого места
+  startTime1.addEventListener('change', function() {
+    if (this.value) {
+      endTime1.disabled = false;
+      endTime1.innerHTML = '<option value="">-- Выберите --</option>';
+
+      const startHour = parseInt(this.value.split(':')[0]);
+
+      // Все часы кроме первого (для конечного времени)
+      const availableEndHours = ALL_HOURS.slice(1)
+              .filter(hour => parseInt(hour.split(':')[0]) > startHour);
+
+      availableEndHours.forEach(hour => {
+        endTime1.innerHTML += `<option value="${hour}">${hour}</option>`;
+      });
+    } else {
+      endTime1.disabled = true;
+      endTime1.innerHTML = '<option value="">-- Выберите --</option>';
+      timeRangeInfo1.style.display = 'none';
+      bookBtn1.style.display = 'none';
+    }
+  });
+
+  // Инициализация начального времени (все часы кроме последнего)
+  startTime1.innerHTML = '<option value="">-- Выберите --</option>';
+  const availableStartHours = ALL_HOURS.slice(0, ALL_HOURS.length-1); // Все часы кроме последнего
+  availableStartHours.forEach(hour => {
+    startTime1.innerHTML += `<option value="${hour}">${hour}</option>`;
+  });
+
+  endTime1.addEventListener('change', function() {
+    if (this.value && startTime1.value) {
+      selectedRange1.textContent = `${startTime1.value} - ${this.value}`;
+      timeRangeInfo1.style.display = 'block';
+      bookBtn1.style.display = 'block';
+    } else {
+      timeRangeInfo1.style.display = 'none';
+      bookBtn1.style.display = 'none';
+    }
+  });
+
+  // Инициализация выбора времени для второго места
+  startTime2.addEventListener('change', function() {
+    if (this.value) {
+      endTime2.disabled = false;
+      endTime2.innerHTML = '<option value="">-- Выберите --</option>';
+
+      const startHour = parseInt(this.value.split(':')[0]);
+      const availableEndHours = ALL_HOURS
+              .filter(hour => parseInt(hour.split(':')[0]) > startHour);
+
+      availableEndHours.forEach(hour => {
+        endTime2.innerHTML += `<option value="${hour}">${hour}</option>`;
+      });
+    } else {
+      endTime2.disabled = true;
+      endTime2.innerHTML = '<option value="">-- Выберите --</option>';
+      timeRangeInfo2.style.display = 'none';
+      bookBtn2.style.display = 'none';
+    }
+  });
+
+  endTime2.addEventListener('change', function() {
+    if (this.value && startTime2.value) {
+      selectedRange2.textContent = `${startTime2.value} - ${this.value}`;
+      timeRangeInfo2.style.display = 'block';
+      bookBtn2.style.display = 'block';
+    } else {
+      timeRangeInfo2.style.display = 'none';
+      bookBtn2.style.display = 'none';
+    }
+  });
+
+  // Отправить данные бронирования на сервер
+  async function sendBooking(placeType, startTime, endTime) {
+    const bookingData = {
+      date: bookingDate.value,
+      startTime: startTime,
+      endTime: endTime,
+      placeType: placeType,
+      price: placeType === 'Рабочее место' ? 200 : 1200,
+      status: 'PENDING'
+    };
+
+    try {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bookingData)
+      });
+
+      if (response.ok) {
+        successMessage.style.display = 'block';
+        setTimeout(() => successMessage.style.display = 'none', 3000);
+
+        // Обновляем список доступных часов
+        const bookedHours = await loadBookedHours(bookingDate.value);
+        const availableHours = getAvailableHours(bookedHours, bookingDate.value);
+        fillTimeSelect(startTime1, availableHours);
+        fillTimeSelect(startTime2, availableHours);
+
+        // Сбрасываем выбор
+        startTime1.value = '';
+        startTime2.value = '';
+        endTime1.innerHTML = '<option value="">-- Надо выбрать начало --</option>';
+        endTime1.disabled = true;
+        endTime2.innerHTML = '<option value="">-- Надо выбрать начало --</option>';
+        endTime2.disabled = true;
+        hideAllBookButtons();
+      } else {
+        alert('Ошибка при бронировании. Зайдите в личный кабинет.');
+      }
+    } catch (error) {
+      console.error('Ошибка:', error);
+      alert('Ошибка при бронировании. Зайдите в личный кабинет.');
+    }
+  }
+
+  // Обработчики кнопок бронирования
+  bookBtn1.addEventListener('click', function() {
+    const placeName = document.querySelector('.space-card h4').textContent;
+    sendBooking(placeName, startTime1.value, endTime1.value);
+  });
+
+  bookBtn2.addEventListener('click', function() {
+    const placeName = document.querySelectorAll('.space-card h4')[1].textContent;
+    sendBooking(placeName, startTime2.value, endTime2.value);
+  });
+
+  // Инициализация при загрузке страницы
+  document.addEventListener('DOMContentLoaded', async function() {
+    const bookedHours = await loadBookedHours(today);
+    const availableHours = getAvailableHours(bookedHours, today);
+    fillTimeSelect(startTime1, availableHours);
+    fillTimeSelect(startTime2, availableHours);
+    hideAllBookButtons();
+  });
 </script>
 </body>
 </html>

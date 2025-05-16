@@ -33,6 +33,6 @@ public class RegistrationController {
            return "registration";
         }
 
-        return  "redirect:/login"; // Перенаправляем на страницу входа
+        return  "redirect:/login";
     }
 }

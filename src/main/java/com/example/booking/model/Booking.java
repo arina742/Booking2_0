@@ -4,89 +4,117 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 
+import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate; // или LocalDateTime, в зависимости от выбранного варианта
+
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Entity
-@Table(name = "bookings")
+@Table(name = "booking")
 public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    @Column
-    private String login;
+    @Column(name = "booking_date", nullable = false)
+    private LocalDate date;
 
-    @Column
-    private Date date;
+    @Column(name = "start_time", nullable = false)
+    private LocalTime startTime;
 
-    @Column
-    private String object;
+    @Column(name = "end_time", nullable = false)
+    private LocalTime endTime;
 
-    @Column
-    private int hours;
+    @Column(name = "place_type", nullable = false, length = 50)
+    private String placeType;
 
-    @Column
-    private double price;
+    @Column(name = "phone_number", nullable = false, length = 20)
+    private String phoneNumber;
 
-    @Column
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Column(name = "status", nullable = false, length = 50)
     private String status;
 
+    // Конструкторы
     public Booking() {
-
     }
-    public Booking(String login, Date date, String object, int hours, double price, String status) {
-        this.login = login;
+
+    public Booking(LocalDate date, LocalTime startTime, LocalTime endTime,
+                   String placeType, String phoneNumber, BigDecimal price, String status) {
         this.date = date;
-        this.object = object;
-        this.hours = hours;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.placeType = placeType;
+        this.phoneNumber = phoneNumber;
         this.price = price;
         this.status = status;
     }
 
-    public int getId() {
+    // Геттеры и сеттеры
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public String getObject() {
-        return object;
+    public LocalTime getStartTime() {
+        return startTime;
     }
 
-    public void setObject(String object) {
-        this.object = object;
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
     }
 
-    public int getHours() {
-        return hours;
+    public LocalTime getEndTime() {
+        return endTime;
     }
 
-    public void setHours(int hours) {
-        this.hours = hours;
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
     }
 
-    public double getPrice() {
+    public String getPlaceType() {
+        return placeType;
+    }
+
+    public void setPlaceType(String placeType) {
+        this.placeType = placeType;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -98,5 +126,17 @@ public class Booking {
         this.status = status;
     }
 
-
+    @Override
+    public String toString() {
+        return "Booking{" +
+                "id=" + id +
+                ", date=" + date +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", placeType='" + placeType + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", price=" + price +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

@@ -21,10 +21,37 @@ body {
     align-items: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
-    border-radius: 40px; /* Закругление углов */
-    left: 10px;                /* Отступ 5px слева от края экрана */
+    border-radius: 40px;
+    left: 10px;
     right: 10px;
-    width: calc(100% - 20px); /* Ширина минус 5px слева + 5px справа */
+    width: calc(100% - 20px);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    margin-left: 2rem;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #ccc;
 }
 
 /* Контейнер основного контента */
@@ -35,20 +62,219 @@ body {
     margin: 5px auto 20px;
 }
 
+/* Стили таблицы и контейнера */
+.table-container {
+    max-height: 500px;
+    overflow-y: auto;
+    margin: 20px 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    position: relative;
+    border: 2px solid #7c7c7c;
+    transition: all 0.3s ease;
+    scroll-behavior: smooth;
+}
 
- .booking-section {
-     margin-top: 2rem;
-     padding: 2rem;
-     background: rgb(91, 91, 91, 0.3);
-     border-radius: 10px;
- }
+.table-container:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    border-color: #d0d0d0;
+}
+
+/* Стилизация скроллбара */
+.table-container::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 0 8px 8px 0;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 5px;
+    border: 2px solid #838383;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Карточка пользователя */
+.user-card {
+    background: rgba(87, 87, 87, 0.3);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 40px 0;
+}
+
+.user-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.user-avatar {
+    font-size: 40px;
+    margin-right: 20px;
+}
+
+.user-info h1 {
+    margin: 0;
+    color: #fafafa;
+    font-size: 1.5rem;
+}
+
+.user-phone {
+    color: #fafafa;
+    margin: 5px 0 0;
+    font-size: 1.5rem;
+}
+
+/* Таблица бронирований */
+.bookings-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bookings-table th, .bookings-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.bookings-table th {
+    background: rgba(87, 87, 87, 0.3);
+    font-weight: 600;
+}
+
+.no-bookings {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+}
+
+/* Статусы бронирований */
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status-active {
+    background-color: #e6f7ee;
+    color: #00a854;
+}
+
+.status-completed {
+    background-color: #f0f5ff;
+    color: #1a6bff;
+}
+
+.status-cancelled {
+    background-color: #fff1f0;
+    color: #f5222d;
+}
+
+.error-message {
+    color: #f5222d;
+    padding: 10px;
+    background-color: #fff1f0;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+/* Кнопки */
+/* Базовый стиль для всех кнопок */
+.button {
+    display: inline-flex; /* Изменено с flex на inline-flex */
+    justify-content: center;
+    align-items: center;
+    background-color: #4e4c4c;
+    color: white;
+    border-radius: 30px;
+    padding: 16px 32px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    width: auto; /* Явно указываем auto ширину */
+    max-width: 100%; /* Защита от переполнения */
+}
+
+/* Модификаторы для конкретных кнопок */
+.button-about {
+    margin: 10px auto;
+    display: inline-block; /* Для центрирования через text-align */
+}
+
+.button-login {
+    margin: 10px auto;
+    display: inline-block;
+}
+
+.button-booking {
+    margin: 10px 0;
+    display: inline-block;
+}
+
+/* Кнопка добавления бронирования */
+.add-booking-btn {
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: inline-block; /* Важно для предотвращения растягивания */
+    text-decoration: none;
+    width: auto;
+}
+
+/* Кнопка подтверждения бронирования */
+.book-btn {
+    display: none;
+    padding: 0.8rem 1.5rem; /* Уменьшил горизонтальный padding */
+    margin-top: 1rem;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: auto; /* Не растягивается на всю ширину */
+    max-width: 200px; /* Ограничение максимальной ширины */
+}
+
+/* Для ссылок, оформленных как кнопки */
+a.button {
+    width: auto; /* Изменено с fit-content на auto */
+    display: inline-block; /* Для правильного выравнивания */
+}
+
+/* Секции бронирования */
+.booking-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(91, 91, 91, 0.3);
+    border-radius: 10px;
+    color: #fff;
+}
 
 .space-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
-    margin: 2rem auto; /* Изменили на auto для горизонтального центрирования */
-    max-width: 1200px; /* Добавьте максимальную ширину по вашему усмотрению */
+    margin: 2rem auto;
+    max-width: 1200px;
 }
 
 .space-card {
@@ -56,9 +282,8 @@ body {
     border-radius: 8px;
     overflow: hidden;
     transition: transform 0.2s;
-    background: rgb(83, 83, 83, 0.4);
-    margin: 0 auto; /* Центрирует карточку по горизонтали */
-    width: 90%; /* Или другое значение, чтобы были отступы */
+    background: rgba(83, 83, 83, 0.4);
+    width: 100%;
 }
 
 .space-card:hover {
@@ -83,75 +308,14 @@ body {
     margin-top: 1rem;
 }
 
-.time-slot {
-    padding: 0.5rem 1rem;
-    background: #6398bf;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-}
-
-.time-slot:hover {
-    background: #395871;
-}
-
-.time-slot.booked {
-    background: #aa3333;
-    color: white;
-    cursor: not-allowed;
-}
-
-.time-slot.selected {
-    background: #4dabf7;
-    color: white;
-}
-
-.auth-message {
-    /*background: rgb(83, 83, 83, 0.4);*/
-    padding: 1.3rem;
-    border-radius: 8px;
-    /*margin: 1rem 0;*/
-    text-align: center;
-    font-weight: bold;
-    font-size: 20px;
-    color: #cccccc;
-}
-
-.booking-form {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    margin-top: 2rem;
-    display: none; /* Сначала скрываем форму */
-}
-
-.price {
-    color: #ffffff;
-    font-weight: bold;
-}
-
-
-.text-time {
-    font-size: 2rem;
-    font-weight: bold;
-    background: linear-gradient(90deg, #00eaff, #342ee5);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    padding: 0.2em 0.5em;
-}
-
-/* Заголовок бронирования - добавляем больше отступа сверху */
+/* Заголовки */
 .booking-header {
     max-width: 600px;
-    margin: 3rem 0 2rem 0; /* Увеличиваем отступ сверху */
+    margin: 3rem 0 1rem;
     padding: 1.5rem 1.5rem 1.5rem 0.1rem;
     text-align: left;
 }
 
-/* Остальные стили остаются без изменений */
 .booking-header h1 {
     font-size: 2.5rem;
     line-height: 1.3;
@@ -172,56 +336,6 @@ body {
     background: linear-gradient(to bottom, #ffffff, #555);
 }
 
-.gallery-container {
-    max-width: 1100px;  /* Чуть меньше для компактности */
-    margin: auto;
-    padding-top: 20px;
-    padding-bottom: -20px;
-}
-
-.gallery-block {
-    display: flex;
-    align-items: center;
-    margin: 60px 0;     /* Уменьшенные вертикальные отступы */
-    gap: 20px;          /* Отступ между изображением и текстом */
-}
-
-.gallery-img {
-    flex: 1;
-    min-width: 0;       /* Исправление проблемы переполнения */
-}
-
-.gallery-img img {
-    width: 100%;
-    max-width: 550px;
-    height: 400px;
-    object-fit: cover;  /* Для корректного отображения */
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-.gallery-text {
-    flex: 1;
-    padding: 0 15px;    /* Уменьшенные боковые отступы */
-    font-size: 1.3rem;  /* Чуть меньше размер шрифта */
-    line-height: 1.5;
-    color: #cccccc;
-    text-align: center;
-    font-weight: bold;
-}
-
-/* Адаптив для мобильных */
-@media (max-width: 768px) {
-    .gallery-block,
-    .gallery-block.reverse {
-        flex-direction: column;
-    }
-
-    .gallery-img img {
-        max-width: 100%;
-    }
-}
-
 .subtitle {
     font-size: 1rem;
     color: #555;
@@ -229,95 +343,24 @@ body {
     font-weight: 400;
 }
 
-/* Базовый стиль для всех кнопок */
-.button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #4e4c4c;
-    color: white;
-    border-radius: 30px;
-    padding: 16px 32px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    text-decoration: none;
-    transition: all 0.3s ease; /* Добавляем плавные переходы */
-}
-
-/* Модификаторы для конкретных кнопок */
-.button-about {
-    margin: 10px auto;
-}
-
-.button-login {
-    margin: 10px auto;
-}
-
-.button-booking {
-    margin: 10px 0;
-}
-
-/* Общие hover-эффекты */
-.button:hover {
-    background-color: #3e3e3e;
-    transform: translateY(-2px);
-}
-
-/* Для ссылок, оформленных как кнопки */
-a.button {
-    width: fit-content;
-}
-
-.image-girl {
-    display: flex;
-    justify-content: flex-end;
-    margin: 0 0 20px 0;
-    padding-right: 20px;
-    padding-top: 35px;
-}
-
-.image-girl img {
-    width: 350px;
-    height: 350px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /*margin-top: -50px;*/
-}
-
-/* Новые стили */
-.about-section {
-    display: flex;
-    align-items: center;  /* Выравниваем по вертикали */
-    gap: 40px;  /* Расстояние между текстом и изображением */
-    margin-top: 30px;
-}
-
-.text-about-us {
-    flex: 1;  /* Занимает доступное пространство */
-}
-
-.text-about-us h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+/* Формы */
+.auth-message {
+    padding: 1.3rem;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.25rem;
     color: #fff;
 }
 
-.text-about-us p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    color: #ddd;
+.booking-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    margin-top: 2rem;
+    display: none;
 }
-
-.location {
-    font-weight: bold;
-    color: #fff !important;
-}
-
 
 .login-form {
     width: 400px;
@@ -326,52 +369,22 @@ a.button {
     background: rgba(83, 83, 83, 0.2);
     border-radius: 15px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    text-align: center;  /* Добавлено */
+    text-align: center;
 }
 
-#log {
+#log, #pass, #pass2 {
     display: flex;
     flex-direction: column;
-    align-items: center;  /* Добавлено */
+    align-items: center;
 }
 
-#log input {
-    border: 1px solid black;  /* Исправлено (было пропущено '1px solid') */
+#log input, #pass input, #pass2 input {
+    border: 1px solid black;
     padding: 0.35rem 1rem;
     border-radius: 20px;
-    width: 60%;  /* Добавлено */
+    width: 60%;
     height: 1.5rem;
-    margin: 7px auto; /* Вот здесь добавлены отступы */
-}
-
-#pass {
-    display: flex;
-    flex-direction: column;
-    align-items: center;  /* Добавлено */
-}
-
-#pass input {
-    border: 1px solid black;  /* Исправлено (было пропущено '1px solid') */
-    padding: 0.35rem 1rem;
-    border-radius: 20px;
-    width: 60%;  /* Добавлено */
-    height: 1.5rem;
-    margin: 7px auto; /* Вот здесь добавлены отступы */
-}
-
-#pass2 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;  /* Добавлено */
-}
-
-#pass2 input {
-    border: 1px solid black;  /* Исправлено (было пропущено '1px solid') */
-    padding: 0.35rem 1rem;
-    border-radius: 20px;
-    width: 60%;  /* Добавлено */
-    height: 1.5rem;
-    margin: 7px auto; /* Вот здесь добавлены отступы */
+    margin: 7px auto;
 }
 
 .register-link {
@@ -391,7 +404,173 @@ a.button {
     text-decoration: underline;
 }
 
-/* Стили для переключателя */
+/* Текст и прочие элементы */
+.left-indent {
+    padding-left: 20px;
+    font-size: 1.2rem;
+}
+
+.price {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.text-time {
+    font-size: 2rem;
+    font-weight: bold;
+    background: linear-gradient(90deg, #00eaff, #342ee5);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding: 0.2em 0.5em;
+}
+
+.location {
+    font-weight: bold;
+    color: #fff !important;
+}
+
+/* Галерея */
+.gallery-container {
+    max-width: 1100px;
+    margin: auto;
+    padding-top: 20px;
+    padding-bottom: -20px;
+}
+
+.gallery-block {
+    display: flex;
+    align-items: center;
+    margin: 60px 0;
+    gap: 20px;
+}
+
+.gallery-img {
+    flex: 1;
+    min-width: 0;
+}
+
+.gallery-img img {
+    width: 100%;
+    max-width: 550px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.gallery-text {
+    flex: 1;
+    padding: 0 15px;
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: #cccccc;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* О нас */
+.about-section {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.text-about-us {
+    flex: 1;
+}
+
+.text-about-us h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.text-about-us p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    color: #ddd;
+}
+
+.image-girl {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 0 20px 0;
+    padding-right: 20px;
+    padding-top: 35px;
+}
+
+.image-girl img {
+    width: 350px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Выбор времени */
+.time-range-selector {
+    margin-top: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.time-range-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.time-range-controls > div {
+    flex: 1 1 150px;
+}
+
+.time-range-info {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    color: white;
+}
+
+.time-input {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background: white;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Выбор даты */
+.date-picker {
+    margin-bottom: 1.5rem;
+}
+
+.date-picker label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: white;
+    font-weight: bold;
+}
+
+.date-picker input {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    width: 100%;
+    max-width: 300px;
+    box-sizing: border-box;
+}
+
+/* Переключатель */
 .switch-group {
     display: flex;
     align-items: center;
@@ -449,74 +628,24 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-/* Адаптация для мобильных */
-@media (max-width: 768px) {
-    .about-section {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .text-about-us {
-        order: 2;  /* Текст после изображения на мобильных */
-    }
-
-    .image-girl {
-        order: 1;
-        margin-right: 0;
-        margin-top: 0;
-    }
-
-    .image-girl img {
-        width: 280px;
-        height: 280px;
-        margin-right: 0;
-    }
-}
-
-.logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #fff;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
-}
-
-.nav-links li {
-    margin-left: 2rem;
-}
-
-.nav-links a {
-    color: #fff;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.nav-links a:hover {
-    color: #ccc;
-}
-
+/* Подвал */
 .footer {
-    background-color: rgba(91, 91, 91, 0.3); /* Полупрозрачный фон */
+    background-color: rgba(91, 91, 91, 0.3);
     color: #fff;
     padding: 1.5rem 0;
     text-align: center;
     border-radius: 50px;
-    width: calc(100% - 40px); /* Аналогично навбару */
-    margin: 3px auto ; /* Отступы сверху/снизу и автоматические по бокам */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень как у навбара */
-    backdrop-filter: blur(5px); /* Размытие фона */
-    box-sizing: border-box; /* Учитываем padding в ширине */
+    width: calc(100% - 40px);
+    margin: 3px auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    box-sizing: border-box;
 }
 
 .footer-content {
     width: 80%;
     margin: 0 auto;
-    padding: 0 20px; /* Добавляем боковые отступы для контента */
+    padding: 0 20px;
 }
 
 .footer p {
@@ -525,27 +654,47 @@ input:checked + .slider:before {
     font-size: 0.9rem;
 }
 
-/* Адаптивность */
-@media (max-width: 768px) {
-    body {
-        padding-top: 120px; /* Больший отступ для мобильных */
-    }
-
-    .image-girl img {
-        width: 250px;
-        height: 250px;
-        margin-top: -20px;
-    }
-
-    .booking-header {
-        padding: 1rem;
-        max-width: 100%;
-        margin: 2rem 0 1rem 0; /* Адаптируем отступы */
+/* Адаптивные стили */
+@media (max-width: 992px) {
+    .space-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
 
     .booking-header h1 {
         font-size: 1.8rem;
-        padding-left: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 120px;
+    }
+
+    .booking-section {
+        padding: 1rem;
+    }
+
+    .space-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .time-range-controls {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .time-range-controls > div {
+        width: 100%;
+    }
+
+    .date-picker input {
+        max-width: 100%;
+    }
+
+    .booking-header h1 {
+        font-size: 1.6rem;
+        padding-left: 1.5rem;
     }
 
     .navbar {
@@ -563,5 +712,61 @@ input:checked + .slider:before {
 
     .container, .footer-content {
         width: 90%;
+    }
+
+    .about-section {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .text-about-us {
+        order: 2;
+    }
+
+    .image-girl {
+        order: 1;
+        margin-right: 0;
+        margin-top: 0;
+    }
+
+    .image-girl img {
+        width: 280px;
+        height: 280px;
+        margin-right: 0;
+    }
+
+    .gallery-block,
+    .gallery-block.reverse {
+        flex-direction: column;
+    }
+
+    .gallery-img img {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .booking-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .space-body {
+        padding: 1rem;
+    }
+
+    .time-range-selector {
+        padding: 1rem;
+    }
+
+    .image-girl img {
+        width: 250px;
+        height: 250px;
+        margin-top: -20px;
+    }
+
+    .booking-header {
+        padding: 1rem;
+        max-width: 100%;
+        margin: 2rem 0 1rem 0;
     }
 }

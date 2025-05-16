@@ -15,7 +15,16 @@
       <li><a th:href="@{/booking}">Бронирование</a></li>
       <li><a th:href="@{/photo}">О нас</a></li>
       <li><a th:href="@{/contact}">Контакты</a></li>
-      <li><a th:href="@{/login}">Вход</a></li>
+      <!-- Блок авторизации -->
+      <li th:if="${session.login != null}">
+        <a th:href="@{/user}">Личный кабинет</a>
+      </li>
+      <li th:if="${session.login != null}">
+        <a th:href="@{/logout}">Выйти</a>
+      </li>
+      <li th:unless="${session.login != null}">
+        <a th:href="@{/login}">Вход</a>
+      </li>
     </ul>
   </nav>
 </header>

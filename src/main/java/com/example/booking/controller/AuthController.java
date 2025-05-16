@@ -1,6 +1,7 @@
 package com.example.booking.controller;
 
 import com.example.booking.services.AuthService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +15,15 @@ public class AuthController {
     public AuthService authService;
 
     @PostMapping("/login")
-    public String handleLogin(@RequestParam String username,@RequestParam String password) {
-        if(authService.authenticate(username, password)) {
+    public String login(@RequestParam String username,
+                        @RequestParam String password,
+                        HttpSession session) {
+        if (authService.authenticate(username, password)) {
+            // Format the phone number properly
+            String formattedPhone = authService.getFormatNumber(username);
+            session.setAttribute("login", formattedPhone);
             return "redirect:/user";
-        } else {
-            return "redirect:/login?error";
         }
+        return "redirect:/login?error";
     }
 }
