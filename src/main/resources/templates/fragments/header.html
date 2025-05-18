@@ -14,16 +14,22 @@
       <li><a th:href="@{/}">Главная</a></li>
       <li><a th:href="@{/booking}">Бронирование</a></li>
       <li><a th:href="@{/photo}">О нас</a></li>
-      <li><a th:href="@{/contact}">Контакты</a></li>
+<!--      <li><a th:href="@{/contact}">Контакты</a></li>-->
       <!-- Блок авторизации -->
       <li th:if="${session.login != null}">
-        <a th:href="@{/user}">Личный кабинет</a>
+        <a th:href="@{/user}">
+          <img th:src="@{/images/login_avatar.jpg}" alt="Личный кабинет" style="width: 24px; height: 24px;"/>
+        </a>
       </li>
       <li th:if="${session.login != null}">
-        <a th:href="@{/logout}">Выйти</a>
+        <a th:href="@{/logout}">
+          <img th:src="@{/images/arrow.jpg}" alt="Выйти" style="width: 24px; height: 24px;"/>
+        </a>
       </li>
       <li th:unless="${session.login != null}">
-        <a th:href="@{/login}">Вход</a>
+        <a th:href="@{/login}">
+          <img th:src="@{/images/enter.jpg}" alt="Личный кабинет" style="width: 24px; height: 24px;"/>
+        </a>
       </li>
     </ul>
   </nav>

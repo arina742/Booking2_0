@@ -50,7 +50,7 @@
                         10:00-12:00
                     </span>
                 </td>
-                <td th:text="${booking.placeType}">Рабочее место</td>
+                <td th:text="${booking.placeType.toLowerCase()}">Рабочее место</td>
                 <td class="price-value" th:text="${booking.price} + ' ₽'">200 ₽</td>
                 <td>
 <!--                    <span th:if="${booking.status}"-->

@@ -5,13 +5,17 @@ import com.example.booking.repositories.BookingRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -59,7 +63,7 @@ public class PageController {
     public String user(Model model, HttpSession session) {
         String phoneNumber = (String) session.getAttribute("login");
         model.addAttribute("phoneNumber", phoneNumber);
-        List<Booking> bookings = bookingRepository.findBookingsByPhoneNumber(phoneNumber);
+        List<Booking> bookings = bookingRepository.findByPhoneNumber(phoneNumber);
         bookings.sort(Comparator.comparing(Booking::getDate).reversed());
         for (int i = 0; i < bookings.size(); i++) {
             bookings.get(i).setId((long) (i+1));
@@ -83,5 +87,15 @@ public class PageController {
         return "redirect:/login?logout";
     }
 
+    @GetMapping("/api/bookings")
+    public ResponseEntity<List<String>> getBookedHours(@RequestParam String date) {
+        LocalDate bookingDate = LocalDate.parse(date);
+        List<String> bookedHours = bookingRepository.findByDate(bookingDate)
+                .stream()
+                .map(Booking::getStartTime)
+                .map(time -> time.toString().substring(0, 5))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(bookedHours);
+    }
 
 }

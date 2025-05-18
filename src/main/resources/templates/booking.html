@@ -11,6 +11,16 @@
     Бронирование успешно создано!
   </div>
 
+  <!-- Модальное окно для уведомлений -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-content">
+      <div class="modal-icon">✓</div>
+      <h3 class="modal-title">Успешно!</h3>
+      <p class="modal-message" id="modalMessage">Бронирование успешно создано!</p>
+      <button class="modal-button" id="modalCloseBtn">OK</button>
+    </div>
+  </div>
+
   <div class="booking-section">
     <div class="auth-message" th:unless="${session.login != null}">
       <h3>Требуется авторизация</h3>
@@ -108,64 +118,282 @@
 
 <script>
   // Все возможные часы для бронирования
+  // Константы и настройки
   const ALL_HOURS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
-    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00'];
-
-  // Устанавливаем минимальную дату (сегодня)
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('bookingDate').min = today;
-  document.getElementById('bookingDate').value = today;
+    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00',
+    '21:00', '22:00'];
+  const PLACE_TYPES = {
+    WORKSPACE: 'рабочее место',
+    MEETING_ROOM: 'переговорная'
+  };
+  const PLACES_COUNT = {
+    [PLACE_TYPES.WORKSPACE]: 25,  // 25 рабочих мест
+    [PLACE_TYPES.MEETING_ROOM]: 3 // 3 переговорные
+  };
 
   // DOM элементы
+  const bookingDate = document.getElementById('bookingDate');
   const startTime1 = document.getElementById('startTime');
   const endTime1 = document.getElementById('endTime');
-  const timeRangeInfo1 = document.getElementById('timeRangeInfo');
-  const selectedRange1 = document.getElementById('selectedRange');
   const bookBtn1 = document.getElementById('bookBtn1');
-
   const startTime2 = document.getElementById('startTime2');
   const endTime2 = document.getElementById('endTime2');
-  const timeRangeInfo2 = document.getElementById('timeRangeInfo2');
-  const selectedRange2 = document.getElementById('selectedRange2');
   const bookBtn2 = document.getElementById('bookBtn2');
+  const successModal = document.getElementById('successModal');
+  const modalMessage = document.getElementById('modalMessage');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
 
-  const bookingDate = document.getElementById('bookingDate');
-  const successMessage = document.getElementById('successMessage');
+  // Установка минимальной даты (сегодня)
+  const today = new Date().toISOString().split('T')[0];
+  bookingDate.min = today;
+  bookingDate.value = today;
 
-  // Получить текущее время в формате "HH:00"
-  function getCurrentHour() {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    return `${hours}:00`;
+  // Инициализация при загрузке страницы
+  document.addEventListener('DOMContentLoaded', async function() {
+    await initTimeSelectors();
+    setupEventListeners();
+  });
+
+  // Основные функции
+
+  async function initTimeSelectors() {
+    const date = bookingDate.value;
+    const [workspaceHours, meetingRoomHours] = await Promise.all([
+      getAvailableHours(date, PLACE_TYPES.WORKSPACE),
+      getAvailableHours(date, PLACE_TYPES.MEETING_ROOM)
+    ]);
+
+    fillTimeSelect(startTime1, workspaceHours);
+    fillTimeSelect(startTime2, meetingRoomHours);
+    hideAllBookButtons();
   }
 
-  // Загрузить занятые часы для выбранной даты
-  async function loadBookedHours(date) {
+  function setupEventListeners() {
+    // Обработчики для модального окна
+    modalCloseBtn.addEventListener('click', () => successModal.classList.remove('active'));
+    successModal.addEventListener('click', (e) => {
+      if (e.target === successModal) successModal.classList.remove('active');
+    });
+
+    // Обработчик изменения даты
+    bookingDate.addEventListener('change', async function() {
+      await initTimeSelectors();
+    });
+
+    // Обработчики для рабочих мест
+    startTime1.addEventListener('change', function() {
+      updateEndTimeOptions(this, endTime1, bookBtn1);
+    });
+    endTime1.addEventListener('change', function() {
+      updateBookingButton(this, startTime1, bookBtn1);
+    });
+
+    // Обработчики для переговорных
+    startTime2.addEventListener('change', function() {
+      updateEndTimeOptions(this, endTime2, bookBtn2);
+    });
+    endTime2.addEventListener('change', function() {
+      updateBookingButton(this, startTime2, bookBtn2);
+    });
+
+    // Кнопки бронирования
+    bookBtn1.addEventListener('click', () => handleBooking(PLACE_TYPES.WORKSPACE, startTime1, endTime1));
+    bookBtn2.addEventListener('click', () => handleBooking(PLACE_TYPES.MEETING_ROOM, startTime2, endTime2));
+  }
+
+  // Функции работы с временем
+
+  async function getAvailableHours(date, placeType) {
     try {
-      const response = await fetch(`/api/bookings?date=${date}`);
-      if (!response.ok) throw new Error('Ошибка загрузки данных');
-      return await response.json();
+      const bookedSlots = await loadBookedSlots(date);
+      const currentHour = getCurrentHour();
+      const isToday = date === today;
+
+      return ALL_HOURS.filter(hour => {
+        if (isToday && hour < currentHour) return false;
+
+        const hourNum = parseInt(hour.split(':')[0]);
+        const nextHour = `${(hourNum + 1).toString().padStart(2, '0')}:00`;
+
+        return isTimeAvailable(bookedSlots, placeType, hour, nextHour);
+      });
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Ошибка получения доступных часов:', error);
       return [];
     }
   }
 
-  // Получить доступные часы (исключая занятые и прошедшие для сегодня)
-  function getAvailableHours(bookedHours, selectedDate) {
-    const currentHour = getCurrentHour();
-    const isToday = selectedDate === today;
+  function updateEndTimeOptions(startSelect, endSelect, bookBtn) {
+    if (startSelect.value) {
+      endSelect.disabled = false;
+      endSelect.innerHTML = '<option value="">-- Выберите --</option>';
 
-    // Если сегодня, фильтруем часы начиная с текущего
-    const filteredHours = isToday
-            ? ALL_HOURS.filter(hour => hour >= currentHour)
-            : ALL_HOURS;
+      const startHour = parseInt(startSelect.value.split(':')[0]);
+      const availableEndHours = ALL_HOURS
+              .filter(hour => parseInt(hour.split(':')[0]) > startHour);
 
-    // Исключаем занятые часы
-    return filteredHours.filter(hour => !bookedHours.includes(hour));
+      availableEndHours.forEach(hour => {
+        endSelect.innerHTML += `<option value="${hour}">${hour}</option>`;
+      });
+    } else {
+      endSelect.disabled = true;
+      endSelect.innerHTML = '<option value="">-- Выберите --</option>';
+      bookBtn.style.display = 'none';
+    }
   }
 
-  // Заполнить select доступными часами
+  function updateBookingButton(endSelect, startSelect, bookBtn) {
+    if (endSelect.value && startSelect.value) {
+      bookBtn.style.display = 'block';
+    } else {
+      bookBtn.style.display = 'none';
+    }
+  }
+
+  // Функции работы с бронированиями
+
+  async function loadBookedSlots(date) {
+    try {
+      const response = await fetch(`/api/bookings/slots?date=${date}`);
+      if (!response.ok) throw new Error('Ошибка загрузки данных');
+      return await response.json();
+    } catch (error) {
+      console.error('Ошибка загрузки броней:', error);
+      return [];
+    }
+  }
+
+  function isTimeAvailable(bookedSlots, placeType, startTime, endTime) {
+    const start = parseInt(startTime.split(':')[0]);
+    const end = parseInt(endTime.split(':')[0]);
+
+    let bookedCount = 0;
+
+    bookedSlots.forEach(slot => {
+      if (slot.placeType !== placeType) return;
+
+      const slotStart = parseInt(slot.startTime.split(':')[0]);
+      const slotEnd = parseInt(slot.endTime.split(':')[0]);
+
+      if ((start < slotEnd) && (end > slotStart)) {
+        bookedCount++;
+      }
+    });
+
+    return bookedCount < PLACES_COUNT[placeType];
+  }
+
+  async function handleBooking(placeType, startSelect, endSelect) {
+    if (!startSelect.value || !endSelect.value) return;
+
+    try {
+      // 1. Сначала проверяем доступность
+      const checkResponse = await fetch('/api/bookings/check', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          date: bookingDate.value,
+          startTime: startSelect.value,
+          endTime: endSelect.value,
+          placeType: placeType
+        })
+      });
+
+      if (!checkResponse.ok) {
+        const error = await checkResponse.json();
+        throw new Error(error.message || 'Это время уже недоступно');
+      }
+
+      // 2. Только если проверка прошла - создаем бронь
+      const bookResponse = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          date: bookingDate.value,
+          startTime: startSelect.value,
+          endTime: endSelect.value,
+          placeType: placeType
+        })
+      });
+
+      if (!bookResponse.ok) {
+        const error = await bookResponse.json();
+        throw new Error(error.message || 'Ошибка бронирования');
+      }
+
+      // 3. Обновляем интерфейс
+      await initTimeSelectors();
+      showSuccessMessage('Бронирование успешно создано!');
+
+    } catch (error) {
+      console.error("Ошибка бронирования:", error);
+      showSuccessMessage("Ошибка: " + error.message);
+    }
+  }
+
+  // Пример для Express.js
+  app.post('/api/bookings/check', async (req, res) => {
+    const { date, startTime, endTime, placeType } = req.body;
+
+    // 1. Получаем все брони для этого типа места и даты
+    const bookings = await Booking.find({
+      date,
+      placeType,
+      $or: [
+        { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
+      ]
+    });
+
+    // 2. Проверяем количество
+    const maxCount = placeType === 'WORKSPACE' ? 25 : 3;
+    if (bookings.length >= maxCount) {
+      return res.status(400).json({
+        message: 'Все места этого типа уже заняты на выбранное время'
+      });
+    }
+
+    res.status(200).json({ available: true });
+  });
+
+  app.post('/api/bookings', async (req, res) => {
+    const session = await Booking.startSession();
+    session.startTransaction();
+
+    try {
+      // Повторно проверяем доступность в транзакции
+      const existing = await Booking.countDocuments({
+        date: req.body.date,
+        placeType: req.body.placeType,
+        $or: [
+          { startTime: { $lt: req.body.endTime }, endTime: { $gt: req.body.startTime } }
+        ]
+      }).session(session);
+
+      const maxCount = req.body.placeType === 'WORKSPACE' ? 25 : 3;
+      if (existing >= maxCount) {
+        throw new Error('Места уже заняты');
+      }
+
+      // Создаем бронь
+      const booking = new Booking(req.body);
+      await booking.save({ session });
+
+      await session.commitTransaction();
+      res.status(201).json(booking);
+    } catch (error) {
+      await session.abortTransaction();
+      res.status(400).json({ message: error.message });
+    } finally {
+      session.endSession();
+    }
+  });
+
+  // Вспомогательные функции
+
   function fillTimeSelect(selectElement, availableHours) {
     selectElement.innerHTML = '<option value="">-- Выберите --</option>';
     availableHours.forEach(hour => {
@@ -173,172 +401,22 @@
     });
   }
 
-  // Обновить доступные часы при изменении даты
-  bookingDate.addEventListener('change', async function() {
-    const selectedDate = this.value;
-    const bookedHours = await loadBookedHours(selectedDate);
-    const availableHours = getAvailableHours(bookedHours, selectedDate);
-
-    // Заполнить оба select'а начала времени
-    fillTimeSelect(startTime1, availableHours);
-    fillTimeSelect(startTime2, availableHours);
-
-    // Сбросить выбор конца времени
-    endTime1.innerHTML = '<option value="">-- Выберите --</option>';
-    endTime1.disabled = true;
-    endTime2.innerHTML = '<option value="">-- Выберите --</option>';
-    endTime2.disabled = true;
-
-    hideAllBookButtons();
-  });
-
-  // Скрыть все кнопки бронирования
   function hideAllBookButtons() {
     bookBtn1.style.display = 'none';
     bookBtn2.style.display = 'none';
-    timeRangeInfo1.style.display = 'none';
-    timeRangeInfo2.style.display = 'none';
   }
 
-  // Инициализация выбора времени для первого места
-  startTime1.addEventListener('change', function() {
-    if (this.value) {
-      endTime1.disabled = false;
-      endTime1.innerHTML = '<option value="">-- Выберите --</option>';
-
-      const startHour = parseInt(this.value.split(':')[0]);
-
-      // Все часы кроме первого (для конечного времени)
-      const availableEndHours = ALL_HOURS.slice(1)
-              .filter(hour => parseInt(hour.split(':')[0]) > startHour);
-
-      availableEndHours.forEach(hour => {
-        endTime1.innerHTML += `<option value="${hour}">${hour}</option>`;
-      });
-    } else {
-      endTime1.disabled = true;
-      endTime1.innerHTML = '<option value="">-- Выберите --</option>';
-      timeRangeInfo1.style.display = 'none';
-      bookBtn1.style.display = 'none';
-    }
-  });
-
-  // Инициализация начального времени (все часы кроме последнего)
-  startTime1.innerHTML = '<option value="">-- Выберите --</option>';
-  const availableStartHours = ALL_HOURS.slice(0, ALL_HOURS.length-1); // Все часы кроме последнего
-  availableStartHours.forEach(hour => {
-    startTime1.innerHTML += `<option value="${hour}">${hour}</option>`;
-  });
-
-  endTime1.addEventListener('change', function() {
-    if (this.value && startTime1.value) {
-      selectedRange1.textContent = `${startTime1.value} - ${this.value}`;
-      timeRangeInfo1.style.display = 'block';
-      bookBtn1.style.display = 'block';
-    } else {
-      timeRangeInfo1.style.display = 'none';
-      bookBtn1.style.display = 'none';
-    }
-  });
-
-  // Инициализация выбора времени для второго места
-  startTime2.addEventListener('change', function() {
-    if (this.value) {
-      endTime2.disabled = false;
-      endTime2.innerHTML = '<option value="">-- Выберите --</option>';
-
-      const startHour = parseInt(this.value.split(':')[0]);
-      const availableEndHours = ALL_HOURS
-              .filter(hour => parseInt(hour.split(':')[0]) > startHour);
-
-      availableEndHours.forEach(hour => {
-        endTime2.innerHTML += `<option value="${hour}">${hour}</option>`;
-      });
-    } else {
-      endTime2.disabled = true;
-      endTime2.innerHTML = '<option value="">-- Выберите --</option>';
-      timeRangeInfo2.style.display = 'none';
-      bookBtn2.style.display = 'none';
-    }
-  });
-
-  endTime2.addEventListener('change', function() {
-    if (this.value && startTime2.value) {
-      selectedRange2.textContent = `${startTime2.value} - ${this.value}`;
-      timeRangeInfo2.style.display = 'block';
-      bookBtn2.style.display = 'block';
-    } else {
-      timeRangeInfo2.style.display = 'none';
-      bookBtn2.style.display = 'none';
-    }
-  });
-
-  // Отправить данные бронирования на сервер
-  async function sendBooking(placeType, startTime, endTime) {
-    const bookingData = {
-      date: bookingDate.value,
-      startTime: startTime,
-      endTime: endTime,
-      placeType: placeType,
-      price: placeType === 'Рабочее место' ? 200 : 1200,
-      status: 'PENDING'
-    };
-
-    try {
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(bookingData)
-      });
-
-      if (response.ok) {
-        successMessage.style.display = 'block';
-        setTimeout(() => successMessage.style.display = 'none', 3000);
-
-        // Обновляем список доступных часов
-        const bookedHours = await loadBookedHours(bookingDate.value);
-        const availableHours = getAvailableHours(bookedHours, bookingDate.value);
-        fillTimeSelect(startTime1, availableHours);
-        fillTimeSelect(startTime2, availableHours);
-
-        // Сбрасываем выбор
-        startTime1.value = '';
-        startTime2.value = '';
-        endTime1.innerHTML = '<option value="">-- Надо выбрать начало --</option>';
-        endTime1.disabled = true;
-        endTime2.innerHTML = '<option value="">-- Надо выбрать начало --</option>';
-        endTime2.disabled = true;
-        hideAllBookButtons();
-      } else {
-        alert('Ошибка при бронировании. Зайдите в личный кабинет.');
-      }
-    } catch (error) {
-      console.error('Ошибка:', error);
-      alert('Ошибка при бронировании. Зайдите в личный кабинет.');
-    }
+  function getCurrentHour() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    return `${hours}:00`;
   }
 
-  // Обработчики кнопок бронирования
-  bookBtn1.addEventListener('click', function() {
-    const placeName = document.querySelector('.space-card h4').textContent;
-    sendBooking(placeName, startTime1.value, endTime1.value);
-  });
-
-  bookBtn2.addEventListener('click', function() {
-    const placeName = document.querySelectorAll('.space-card h4')[1].textContent;
-    sendBooking(placeName, startTime2.value, endTime2.value);
-  });
-
-  // Инициализация при загрузке страницы
-  document.addEventListener('DOMContentLoaded', async function() {
-    const bookedHours = await loadBookedHours(today);
-    const availableHours = getAvailableHours(bookedHours, today);
-    fillTimeSelect(startTime1, availableHours);
-    fillTimeSelect(startTime2, availableHours);
-    hideAllBookButtons();
-  });
+  function showSuccessMessage(message) {
+    modalMessage.textContent = message;
+    successModal.classList.add('active');
+    setTimeout(() => successModal.classList.remove('active'), 3000);
+  }
 </script>
 </body>
 </html>
