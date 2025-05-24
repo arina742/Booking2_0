@@ -287,12 +287,10 @@
     if (!startSelect.value || !endSelect.value) return;
 
     try {
-      // 1. Сначала проверяем доступность
+      // 1. Проверка доступности
       const checkResponse = await fetch('/api/bookings/check', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           date: bookingDate.value,
           startTime: startSelect.value,
@@ -301,17 +299,15 @@
         })
       });
 
-      if (!checkResponse.ok) {
-        const error = await checkResponse.json();
-        throw new Error(error.message || 'Это время уже недоступно');
+      const checkResult = await checkResponse.json();
+      if (!checkResult.available) {
+        throw new Error(checkResult.message || 'Место недоступно');
       }
 
-      // 2. Только если проверка прошла - создаем бронь
+      // 2. Создание брони
       const bookResponse = await fetch('/api/bookings', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           date: bookingDate.value,
           startTime: startSelect.value,
@@ -321,18 +317,52 @@
       });
 
       if (!bookResponse.ok) {
-        const error = await bookResponse.json();
-        throw new Error(error.message || 'Ошибка бронирования');
+        throw new Error('Ошибка сервера при бронировании');
       }
 
-      // 3. Обновляем интерфейс
-      await initTimeSelectors();
+      // 3. Обновление интерфейса
+      await updateAvailableSlots();
       showSuccessMessage('Бронирование успешно создано!');
-
     } catch (error) {
       console.error("Ошибка бронирования:", error);
       showSuccessMessage("Ошибка: " + error.message);
     }
+  }
+
+  // Функция обновления слотов
+  async function updateAvailableSlots() {
+    const date = bookingDate.value;
+    const [workspaceSlots, meetingSlots] = await Promise.all([
+      fetch(`/api/bookings/slots?date=${date}&placeType=рабочее%20место`),
+      fetch(`/api/bookings/slots?date=${date}&placeType=переговорная`)
+    ]);
+
+    const workspaceBookings = await workspaceSlots.json();
+    const meetingBookings = await meetingSlots.json();
+
+    // Обновляем доступные часы для рабочих мест
+    const workspaceHours = ALL_HOURS.filter(hour => {
+      const hourStart = parseInt(hour.split(':')[0]);
+      const hourEnd = hourStart + 1;
+      const overlapping = workspaceBookings.filter(b =>
+              hourStart < b.endTime && hourEnd > b.startTime
+      ).length;
+      return overlapping < 25;
+    });
+
+    // Обновляем доступные часы для переговорных
+    const meetingHours = ALL_HOURS.filter(hour => {
+      const hourStart = parseInt(hour.split(':')[0]);
+      const hourEnd = hourStart + 1;
+      const overlapping = meetingBookings.filter(b =>
+              hourStart < b.endTime && hourEnd > b.startTime
+      ).length;
+      return overlapping < 3;
+    });
+
+    fillTimeSelect(startTime1, workspaceHours);
+    fillTimeSelect(startTime2, meetingHours);
+    hideAllBookButtons();
   }
 
   // Пример для Express.js

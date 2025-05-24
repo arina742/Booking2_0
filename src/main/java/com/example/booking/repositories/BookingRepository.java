@@ -1,10 +1,14 @@
 package com.example.booking.repositories;
 
 import com.example.booking.model.Booking;
+import com.example.booking.model.BookingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.List;
@@ -26,4 +30,17 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("startTime") LocalTime startTime,
             @Param("endTime") LocalTime endTime,
             @Param("placeType") String placeType);
+//    @Modifying
+//    @Query("UPDATE Booking b SET b.status = 'CANCELLED' WHERE b.id = :id")
+//    void cancelBooking(@Param("id") Long id);
+
+    @Query("SELECT b FROM Booking b WHERE b.status = 'ACTIVE'")
+    List<Booking> findAllActive();
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Booking b SET b.status = 'CANCELLED' WHERE b.id = :id AND b.status <> 'CANCELLED'")
+    int cancelBooking(@Param("id") Long id);
+    // Метод для получения только активных броней
+    List<Booking> findByPhoneNumberAndStatus(String phoneNumber, BookingStatus status);
 }

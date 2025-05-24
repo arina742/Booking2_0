@@ -10,12 +10,6 @@ import java.time.LocalTime;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate; // или LocalDateTime, в зависимости от выбранного варианта
-
-import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "booking")
@@ -43,15 +37,16 @@ public class Booking {
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "status", nullable = false, length = 50)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status = BookingStatus.ACTIVE;
 
     // Конструкторы
     public Booking() {
     }
 
     public Booking(LocalDate date, LocalTime startTime, LocalTime endTime,
-                   String placeType, String phoneNumber, BigDecimal price, String status) {
+                   String placeType, String phoneNumber, BigDecimal price,
+                   BookingStatus status) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -118,11 +113,11 @@ public class Booking {
         this.price = price;
     }
 
-    public String getStatus() {
+    public BookingStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(BookingStatus status) {
         this.status = status;
     }
 
@@ -136,7 +131,8 @@ public class Booking {
                 ", placeType='" + placeType + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", price=" + price +
-                ", status='" + status + '\'' +
+                ", status=" + status +
                 '}';
     }
 }
+

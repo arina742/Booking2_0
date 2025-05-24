@@ -1,16 +1,19 @@
 package com.example.booking.controller;
 
 import com.example.booking.model.Booking;
+import com.example.booking.model.BookingStatus;
 import com.example.booking.repositories.BookingRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -110,7 +113,7 @@ public class BookingController {
             booking.setEndTime(request.getEndTime());
             booking.setPlaceType(request.getPlaceType());
             booking.setPhoneNumber(phoneNumber);
-            booking.setStatus("PENDING");
+            booking.setStatus(BookingStatus.ACTIVE);
 
             long hours = Duration.between(
                     request.getStartTime(), request.getEndTime()).toHours();
@@ -126,6 +129,24 @@ public class BookingController {
             return ResponseEntity.badRequest().body("Ошибка: " + e.getMessage());
         }
     }
+
+    @PostMapping("/{id}/cancel")
+    @Transactional
+    public ResponseEntity<String> cancelBooking(@PathVariable Long id) {
+        try {
+            // Вариант 1: Используем метод репозитория
+            int updated = bookingRepository.cancelBooking(id);
+            if (updated == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Бронирование не найдено");
+            }
+
+            return ResponseEntity.ok("Бронирование успешно отменено");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("Ошибка при отмене бронирования: " + e.getMessage());
+        }
+    }
 }
 
 // DTO классы
@@ -134,6 +155,7 @@ class BookingCheckRequest {
     private String startTime;
     private String endTime;
     private String placeType;
+    // геттеры и сеттеры
 
     public String getDate() {
         return date;
@@ -151,14 +173,6 @@ class BookingCheckRequest {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
     public String getPlaceType() {
         return placeType;
     }
@@ -166,15 +180,23 @@ class BookingCheckRequest {
     public void setPlaceType(String placeType) {
         this.placeType = placeType;
     }
-    // геттеры и сеттеры
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
 }
 
 class BookingRequest {
-
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
     private String placeType;
+    // геттеры и сеттеры
+
 
     public LocalDate getDate() {
         return date;
@@ -208,3 +230,5 @@ class BookingRequest {
         this.placeType = placeType;
     }
 }
+
+

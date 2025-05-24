@@ -2,8 +2,11 @@ package com.example.booking.controller;
 
 import com.example.booking.model.Booking;
 import com.example.booking.repositories.BookingRepository;
+import com.example.booking.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,8 +23,11 @@ import java.util.stream.Collectors;
 
 @Controller
 public class PageController {
+    private static final Logger log = LoggerFactory.getLogger(BookingController.class);
+
     @Autowired
     private BookingRepository bookingRepository;
+    private UserRepository userRepository;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -42,9 +48,19 @@ public class PageController {
     }
 
     @GetMapping("/booking")
-    public String booking(Model model) {
+    public String booking(Model model, HttpSession session) {
         model.addAttribute("pageTitle", "Бронирование");
+        Boolean tgConnected = (Boolean) session.getAttribute("tg_connected");
+        model.addAttribute("showContent", tgConnected != null && tgConnected);
         return "booking";
+    }
+
+    @GetMapping("/connect-telegram")
+    public String connectTelegram(@RequestParam String chatId, HttpSession session) {
+        // Просто ставим флаг, что пользователь "подключил" бота
+        session.setAttribute("tg_connected", true);
+        log.info("Received chatId: {}", chatId); // Добавьте этот лог
+        return "redirect:/booking";
     }
 
     @GetMapping("/login")

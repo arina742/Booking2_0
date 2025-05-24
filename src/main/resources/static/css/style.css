@@ -27,6 +27,47 @@ body {
     width: calc(100% - 20px);
 }
 
+/*----------------------------------*/
+/*tg bot*/
+.telegram-blocker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(94, 94, 94, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.telegram-popup {
+    background: rgb(62, 62, 62);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 400px;
+}
+
+.tg-button {
+    display: inline-block;
+    background: #0088cc;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.tg-confirm {
+    color: #efefef;
+    font-size: 14px;
+    text-decoration: underline;
+}
+
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
@@ -304,6 +345,30 @@ body {
     transition: background 0.3s;
 }
 
+.add-bookings {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    margin: 0.8rem 0.8rem 0.8rem 0.8rem ;
+    border-radius: 5px;
+    cursor: pointer;
+    float: right;
+    font-family: inherit;
+    font-size: inherit;
+    text-align: center;
+    line-height: normal;
+}
+/* Убираем стандартные стили для <button> */
+.button.add-booking::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/* Стиль при наведении */
+.button.add-booking:hover {
+    background-color: #0069d9;
+}
 .modal-button:hover {
     background: #45a049;
 }
