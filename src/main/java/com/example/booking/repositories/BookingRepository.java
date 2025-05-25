@@ -34,15 +34,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE Booking b SET b.status = 'COMPLETED' " +
-            "WHERE (b.status = 'ACTIVE' OR b.status = 'CONFIRMED') AND " +
+            "WHERE (b.status = 'ACTIVE') AND " +
             "(b.date < CURRENT_DATE OR " +
             "(b.date = CURRENT_DATE AND b.endTime < CURRENT_TIME))")
     void updateExpiredBookings();
 
-
     @Modifying
     @Transactional
-    @Query("UPDATE Booking b SET b.status = 'CANCELLED' WHERE b.id = :id AND b.status <> 'CANCELLED'")
-    int cancelBooking(@Param("id") Long id);
-    List<Booking> findByPhoneNumberAndStatus(String phoneNumber, BookingStatus status);
+    @Query("UPDATE Booking b SET b.status = 'CANCELLED' WHERE b.id = :id")
+    void cancelBooking(@Param("id") long id);
+
+
 }

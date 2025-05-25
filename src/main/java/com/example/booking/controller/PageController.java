@@ -1,6 +1,7 @@
 package com.example.booking.controller;
 
 import com.example.booking.model.Booking;
+import com.example.booking.model.BookingStatus;
 import com.example.booking.repositories.BookingRepository;
 import com.example.booking.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
@@ -19,6 +22,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 
 @Controller
@@ -72,26 +76,31 @@ public class PageController {
         String phoneNumber = (String) session.getAttribute("login");
         model.addAttribute("phoneNumber", phoneNumber);
         List<Booking> bookings = bookingRepository.findByPhoneNumber(phoneNumber);
-        bookings.sort(Comparator.comparing(Booking::getDate).reversed());
-        for (int i = 0; i < bookings.size(); i++) {
-            bookings.get(i).setId((long) (i+1));
-        }
-        model.addAttribute("bookings", bookings);
+        List<Booking> sortedBookings = bookings.stream()
+                .sorted(Comparator
+                        .comparing(Booking::getStatus, Comparator.comparing(status -> {
+                            // Порядок сортировки статусов
+                            if (status == BookingStatus.ACTIVE) return 1;
+                            if (status == BookingStatus.COMPLETED) return 2;
+                            return 3;
+                        }))
+                        .thenComparing(Booking::getDate)
+                        .thenComparing(Booking::getStartTime)
 
+                )
+                .collect(Collectors.toList());
+
+        model.addAttribute("bookings", sortedBookings);
         return "user";
     }
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
-        // Получаем текущую сессию
         HttpSession session = request.getSession(false);
 
-        // Если сессия существует - очищаем ее
         if (session != null) {
             session.invalidate(); // Уничтожает сессию
         }
-
-        // Перенаправляем на страницу входа
         return "redirect:/login?logout";
     }
 
@@ -105,6 +114,23 @@ public class PageController {
                 .map(time -> time.toString().substring(0, 5))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(bookedHours);
+    }
+
+    @GetMapping("/{id}/cancel")
+    @Transactional
+    public String cancelBooking(@PathVariable("id") Long id) {
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+
+        logger.info("Начало обработки отмены бронирования ID: {}", id);
+
+        try {
+            bookingRepository.cancelBooking(id);
+            logger.info("Бронирование ID: {} успешно отменено", id);
+        } catch (Exception e) {
+            logger.error("Ошибка при отмене бронирования ID: {}", id, e);
+        }
+
+        return "redirect:/user";
     }
 
 }

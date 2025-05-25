@@ -228,18 +228,19 @@ body {
 
 /* Кнопка добавления бронирования */
 .add-booking-btn {
-    background-color: #1890ff;
+    background-color: #1890ff;;
     color: white;
+    font-weight: bold;
     border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
+    padding: 10px 15px;
+    border-radius: 15px;
     cursor: pointer;
-    margin-bottom: 20px;
-    display: inline-block; /* Важно для предотвращения растягивания */
+    margin: 1rem 0;
     text-decoration: none;
-    width: auto;
+    display: block;
+    margin-left: auto;
+    width: fit-content;
 }
-
 /* Стили для модального окна */
 .modal-overlay {
     position: fixed;

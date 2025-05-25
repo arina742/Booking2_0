@@ -125,24 +125,13 @@ public class BookingController {
             return ResponseEntity.badRequest().body("Ошибка: " + e.getMessage());
         }
     }
-
-    @PostMapping("/{id}/cancel")
-    @Transactional
-    public ResponseEntity<String> cancelBooking(@PathVariable Long id) {
-        try {
-            // Вариант 1: Используем метод репозитория
-            int updated = bookingRepository.cancelBooking(id);
-            if (updated == 0) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Бронирование не найдено");
-            }
-
-            return ResponseEntity.ok("Бронирование успешно отменено");
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                    .body("Ошибка при отмене бронирования: " + e.getMessage());
-        }
-    }
+//
+//    @PostMapping("/{id}/cancel")
+//    @Transactional
+//    public String cancelBooking(@PathVariable Long id) {
+//        bookingRepository.cancelBooking(143);
+//        return "redirect:/user";
+//    }
 }
 
 // DTO классы
