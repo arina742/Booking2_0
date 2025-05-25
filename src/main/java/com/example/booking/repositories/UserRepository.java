@@ -17,5 +17,4 @@ import java.util.function.Function;
 public interface UserRepository extends JpaRepository<UserCredentials, Long> {
     UserCredentials findByLogin(String login);
     boolean existsByLogin(String login);
-//    List<UserCredentials> findByLogin(String login);
 }

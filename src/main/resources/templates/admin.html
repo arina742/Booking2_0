@@ -1,32 +1,61 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: head"></head>
+<head th:replace="fragments/header :: head">
+
+</head>
 <body>
 <div th:replace="fragments/header :: header"></div>
 
 <main class="container">
     <div class="user-card">
         <div class="user-header">
-            <div class="user-avatar">💻</div>
+            <div class="user-avatar">👑</div>
             <div class="user-info">
                 <h1>Личный кабинет администратора</h1>
                 <p class="user-phone" th:text="${phoneNumber} ?: 'Номер не указан'"></p>
             </div>
-        </div>
-
-        <div th:if="${phoneNumber == null}" class="alert alert-danger">
-            Ошибка: администратор не авторизован.
         </div>
     </div>
 
     <div class="user-card">
         <div class="user-header">
             <h2>Бронирования пользователей</h2>
-<!--            <a href="/booking" class="add-booking-btn">+ Добавить</a>-->
-        </div>
-        <div class="table-container">
 
-            <table class="table table-hover bookings-table">
+            <!-- Улучшенная панель поиска -->
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input"
+                       placeholder="Поиск по ID, номеру, дате, времени..."
+                       onkeyup="filterBookings()">
+                <button class="search-btn" onclick="filterBookings()">
+                    <i class="bi bi-search"></i> Поиск
+                </button>
+            </div>
+
+            <!-- Фильтры -->
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <span class="filter-label">Статус:</span>
+                    <select id="statusFilter" class="form-control" onchange="filterBookings()">
+                        <option value="ALL">Все</option>
+                        <option value="ACTIVE">Активные</option>
+                        <option value="CANCELLED">Отмененные</option>
+                        <option value="COMPLETED">Завершенные</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Тип места:</span>
+                    <select id="placeTypeFilter" class="form-control" onchange="filterBookings()">
+                        <option value="ALL">Все</option>
+                        <option value="переговорная">Переговорная</option>
+                        <option value="рабочее место">Рабочее место</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="table table-hover bookings-table" id="bookingsTable">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -41,26 +70,29 @@
                 </thead>
                 <tbody>
                 <tr th:if="${bookings == null or bookings.isEmpty()}">
-                    <td colspan="7" class="text-center py-4 text-muted">
+                    <td colspan="8" class="text-center py-4 text-muted">
                         Нет активных бронирований
                     </td>
                 </tr>
 
-                <tr th:each="booking : ${bookings}" th:attr="data-booking-id=${booking.id}">
+                <tr th:each="booking : ${bookings}" th:attr="data-booking-id=${booking.id}"
+                    class="booking-row"
+                    th:data-status="${booking.status.name()}"
+                    th:data-place-type="${#strings.toLowerCase(booking.placeType)}">
                     <td th:text="'#' + ${booking.id}"></td>
                     <td th:text="'#' + ${booking.phoneNumber}"></td>
                     <td th:text="${#temporals.format(booking.date, 'dd.MM.yyyy')}"></td>
                     <td>
                         <span th:text="${#temporals.format(booking.startTime, 'HH:mm')} + '-' + ${#temporals.format(booking.endTime, 'HH:mm')}"></span>
                     </td>
-                    <td th:text="${#strings.capitalize(booking.placeType.toLowerCase())}"></td>
+                    <td th:text="${booking.placeType}"></td>
                     <td th:text="${booking.price} + ' ₽'"></td>
                     <td>
-                            <span th:switch="${booking.status.name()}">
-                                <span th:case="'ACTIVE'" class="badge bg-success">Активно</span>
-                                <span th:case="'CANCELLED'" class="badge bg-secondary">Отменено</span>
-                                <span th:case="'COMPLETED'" class="badge bg-secondary">Завершено</span>
-                            </span>
+                        <span th:switch="${booking.status.name()}">
+                            <span th:case="'ACTIVE'" class="badge bg-success">Активно</span>
+                            <span th:case="'CANCELLED'" class="badge bg-secondary">Отменено</span>
+                            <span th:case="'COMPLETED'" class="badge bg-secondary">Завершено</span>
+                        </span>
                     </td>
                     <td>
                         <button th:if="${booking.status.name() == 'ACTIVE'}"
@@ -73,10 +105,75 @@
                 </tr>
                 </tbody>
             </table>
+            <div id="noResults" class="no-results">
+                Ничего не найдено. Попробуйте изменить параметры поиска.
+            </div>
         </div>
     </div>
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    // Функция для фильтрации бронирований
+    function filterBookings() {
+        const searchText = document.getElementById('searchInput').value.toUpperCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+        const placeTypeFilter = document.getElementById('placeTypeFilter').value.toLowerCase();
+
+        const rows = document.getElementsByClassName('booking-row');
+        let visibleCount = 0;
+
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            let matchesSearch = false;
+            let matchesStatus = statusFilter === 'ALL' || row.getAttribute('data-status') === statusFilter;
+            let matchesPlaceType = placeTypeFilter === 'all' ||
+                row.getAttribute('data-place-type').includes(placeTypeFilter);
+
+            // Поиск по тексту
+            if (searchText) {
+                for (let j = 0; j < row.cells.length - 1; j++) {
+                    const cell = row.cells[j];
+                    if (cell) {
+                        const text = cell.textContent || cell.innerText;
+                        if (text.toUpperCase().includes(searchText)) {
+                            matchesSearch = true;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                matchesSearch = true;
+            }
+
+            // Показываем строку если все условия выполнены
+            const shouldShow = matchesSearch && matchesStatus && matchesPlaceType;
+            row.style.display = shouldShow ? "" : "none";
+
+            if (shouldShow) visibleCount++;
+        }
+
+        // Показываем сообщение если ничего не найдено
+        document.getElementById('noResults').style.display = visibleCount > 0 ? "none" : "block";
+    }
+
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        filterBookings();
+
+        // Восстанавливаем параметры из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('search')) {
+            document.getElementById('searchInput').value = urlParams.get('search');
+        }
+        if (urlParams.has('status')) {
+            document.getElementById('statusFilter').value = urlParams.get('status');
+        }
+        if (urlParams.has('placeType')) {
+            document.getElementById('placeTypeFilter').value = urlParams.get('placeType');
+        }
+    });
+</script>
 </body>
 </html>

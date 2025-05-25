@@ -64,44 +64,44 @@ body {
     margin: 5px auto 20px;
 }
 
-/* Стили таблицы и контейнера */
+/* Таблица */
 .table-container {
-    max-height: 500px;
-    overflow-y: auto;
-    margin: 20px 0;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border-radius: 10px;
     position: relative;
-    border: 2px solid #7c7c7c;
-    transition: all 0.3s ease;
-    scroll-behavior: smooth;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-.table-container:hover {
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-    border-color: #d0d0d0;
+.bookings-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
 }
 
-/* Стилизация скроллбара */
-.table-container::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+.bookings-table th {
+    background: rgba(87, 87, 87, 0.4);
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-.table-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 0 8px 8px 0;
+.bookings-table td {
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-.table-container::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 5px;
-    border: 2px solid #838383;
+.bookings-table tr:last-child td {
+    border-bottom: none;
 }
 
-.table-container::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+.bookings-table tr:hover td {
+    background: rgba(255,255,255,0.03);
 }
+
 
 /* Карточка пользователя */
 .user-card {
@@ -241,6 +241,64 @@ input:checked + .toggle-slider {
 input:checked + .toggle-slider:before {
     transform: translateX(20px);
 }
+
+/*поисковая строка у админа*/
+.search-container {
+    display: flex;
+    max-width: 400px;
+    margin: 20px 0;
+}
+
+.search-container input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.search-container button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.search-input {
+    flex: 1;
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.search-btn {
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.filter-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.filter-label {
+    font-weight: bold;
+}
+.no-results {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    display: none;
+}
+
 
 
 
@@ -554,6 +612,54 @@ a.button {
 
 .register-link a:hover {
     text-decoration: underline;
+}
+
+
+
+/* Статусы */
+.badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.bg-success {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+
+.bg-secondary {
+    background-color: rgba(108, 117, 125, 0.2);
+    color: #6c757d;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.cancel-btn {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+.cancel-btn:hover {
+    background-color: rgba(220, 53, 69, 0.3);
+}
+
+/* Сообщение "нет результатов" */
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255,255,255,0.5);
+    display: none;
+    font-size: 1.1rem;
 }
 
 /* Текст и прочие элементы */

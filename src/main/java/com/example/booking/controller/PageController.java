@@ -23,8 +23,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-
 @Controller
 public class PageController {
     private static final Logger log = LoggerFactory.getLogger(BookingController.class);
@@ -96,6 +94,7 @@ public class PageController {
 
     @GetMapping("/admin")
     public String admin(Model model, HttpSession session) {
+
         bookingRepository.updateExpiredBookings();
         String phoneNumber = (String) session.getAttribute("login");
         model.addAttribute("phoneNumber", phoneNumber);

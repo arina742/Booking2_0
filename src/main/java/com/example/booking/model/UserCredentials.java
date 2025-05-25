@@ -20,6 +20,7 @@ public class UserCredentials {
     @Column(name = "is_admin")
     private boolean isAdmin = false;
 
+
     public UserCredentials(){
         
     }

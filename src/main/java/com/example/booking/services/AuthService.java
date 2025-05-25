@@ -18,11 +18,33 @@ public class AuthService {
     private UserRepository userRepository;
     Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
 
-    public boolean authenticate(String login, String password) {
-        login=getFormatNumber(login);
-        UserCredentials userCredentials = userRepository.findByLogin(login);
-        if (userCredentials == null) return false;
-        return argon2.verify(userCredentials.getPassword(), password.toCharArray());
+    public boolean authenticate(String login, String password, boolean isAdminLogin) {
+        login = getFormatNumber(login);
+        UserCredentials user = userRepository.findByLogin(login);
+
+        // 1. Проверяем существует ли пользователь
+        if (user == null) return false;
+
+        // 2. Проверяем пароль через Argon2
+        if (!argon2.verify(user.getPassword(), password.toCharArray())) {
+            return false;
+        }
+
+        // 3. Если вход для админа - проверяем isAdmin флаг
+        if (isAdminLogin && !user.isAdmin()) {
+            return false;
+        }
+
+        return true;
+    }
+
+//    public boolean authenticate(String login, String password) {
+//        UserCredentials user = userRepository.findByLogin(login);
+//        return user != null && user.getPassword().equals(password);
+//    }
+
+    public UserCredentials getUserByLogin(String login) {
+        return userRepository.findByLogin(login);
     }
 
     public boolean register(String login, String password) {

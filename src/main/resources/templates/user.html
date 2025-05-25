@@ -76,5 +76,13 @@
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    function cancelBooking(bookingId) {
+        if (confirm('Отменить бронирование?')) {
+            window.location.href = '/' + bookingId+ '/cancel';
+        }
+    }
+</script>
 </body>
 </html>
