@@ -49,18 +49,9 @@ public class PageController {
 
     @GetMapping("/booking")
     public String booking(Model model, HttpSession session) {
+        bookingRepository.updateExpiredBookings();
         model.addAttribute("pageTitle", "Бронирование");
-        Boolean tgConnected = (Boolean) session.getAttribute("tg_connected");
-        model.addAttribute("showContent", tgConnected != null && tgConnected);
         return "booking";
-    }
-
-    @GetMapping("/connect-telegram")
-    public String connectTelegram(@RequestParam String chatId, HttpSession session) {
-        // Просто ставим флаг, что пользователь "подключил" бота
-        session.setAttribute("tg_connected", true);
-        log.info("Received chatId: {}", chatId); // Добавьте этот лог
-        return "redirect:/booking";
     }
 
     @GetMapping("/login")
@@ -77,6 +68,7 @@ public class PageController {
 
     @GetMapping("/user")
     public String user(Model model, HttpSession session) {
+        bookingRepository.updateExpiredBookings();
         String phoneNumber = (String) session.getAttribute("login");
         model.addAttribute("phoneNumber", phoneNumber);
         List<Booking> bookings = bookingRepository.findByPhoneNumber(phoneNumber);
@@ -105,6 +97,7 @@ public class PageController {
 
     @GetMapping("/api/bookings")
     public ResponseEntity<List<String>> getBookedHours(@RequestParam String date) {
+        bookingRepository.updateExpiredBookings();
         LocalDate bookingDate = LocalDate.parse(date);
         List<String> bookedHours = bookingRepository.findByDate(bookingDate)
                 .stream()

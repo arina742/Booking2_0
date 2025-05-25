@@ -63,8 +63,7 @@
                                 th:attr="data-booking-id=${booking.id}">
                             Отменить
                         </button>
-                        <span th:if="${booking.status.name() == 'CANCELLED'}" class="text-muted">—</span>
-                        <span th:if="${booking.status.name() == 'COMPLETED'}" class="text-muted">—</span>
+                        <span th:if="${booking.status.name() != 'ACTIVE'}" class="text-muted">—</span>
                     </td>
                 </tr>
                 </tbody>

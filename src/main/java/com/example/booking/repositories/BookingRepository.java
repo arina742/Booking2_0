@@ -30,17 +30,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("startTime") LocalTime startTime,
             @Param("endTime") LocalTime endTime,
             @Param("placeType") String placeType);
-//    @Modifying
-//    @Query("UPDATE Booking b SET b.status = 'CANCELLED' WHERE b.id = :id")
-//    void cancelBooking(@Param("id") Long id);
 
-    @Query("SELECT b FROM Booking b WHERE b.status = 'ACTIVE'")
-    List<Booking> findAllActive();
+    @Modifying
+    @Transactional
+    @Query("UPDATE Booking b SET b.status = 'COMPLETED' " +
+            "WHERE (b.status = 'ACTIVE' OR b.status = 'CONFIRMED') AND " +
+            "(b.date < CURRENT_DATE OR " +
+            "(b.date = CURRENT_DATE AND b.endTime < CURRENT_TIME))")
+    void updateExpiredBookings();
+
 
     @Modifying
     @Transactional
     @Query("UPDATE Booking b SET b.status = 'CANCELLED' WHERE b.id = :id AND b.status <> 'CANCELLED'")
     int cancelBooking(@Param("id") Long id);
-    // Метод для получения только активных броней
     List<Booking> findByPhoneNumberAndStatus(String phoneNumber, BookingStatus status);
 }
