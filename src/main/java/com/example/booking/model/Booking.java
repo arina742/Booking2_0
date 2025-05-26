@@ -1,14 +1,8 @@
 package com.example.booking.model;
 
 import jakarta.persistence.*;
-
-import java.util.Date;
-
-import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity

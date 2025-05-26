@@ -1,10 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
 <body>
+<div th:replace="fragments/header :: header"></div>
 
+<main class="container">
+    <div class="user-card">
+        <div class="user-header">
+            <div class="user-avatar">💻</div>
+            <div class="user-info">
+                <h1>Личный кабинет администратора</h1>
+                <p class="user-phone" th:text="${phoneNumber} ?: 'Номер не указан'"></p>
+            </div>
+        </div>
+
+        <div th:if="${phoneNumber == null}" class="alert alert-danger">
+            Ошибка: администратор не авторизован.
+        </div>
+    </div>
+
+    <div class="user-card">
+        <div class="user-header">
+            <h2>Бронирования пользователей</h2>
+<!--            <a href="/booking" class="add-booking-btn">+ Добавить</a>-->
+        </div>
+        <div class="table-container">
+
+            <table class="table table-hover bookings-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Номер</th>
+                    <th>Дата</th>
+                    <th>Время</th>
+                    <th>Тип места</th>
+                    <th>Стоимость</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${bookings == null or bookings.isEmpty()}">
+                    <td colspan="7" class="text-center py-4 text-muted">
+                        Нет активных бронирований
+                    </td>
+                </tr>
+
+                <tr th:each="booking : ${bookings}" th:attr="data-booking-id=${booking.id}">
+                    <td th:text="'#' + ${booking.id}"></td>
+                    <td th:text="'#' + ${booking.phoneNumber}"></td>
+                    <td th:text="${#temporals.format(booking.date, 'dd.MM.yyyy')}"></td>
+                    <td>
+                        <span th:text="${#temporals.format(booking.startTime, 'HH:mm')} + '-' + ${#temporals.format(booking.endTime, 'HH:mm')}"></span>
+                    </td>
+                    <td th:text="${#strings.capitalize(booking.placeType.toLowerCase())}"></td>
+                    <td th:text="${booking.price} + ' ₽'"></td>
+                    <td>
+                            <span th:switch="${booking.status.name()}">
+                                <span th:case="'ACTIVE'" class="badge bg-success">Активно</span>
+                                <span th:case="'CANCELLED'" class="badge bg-secondary">Отменено</span>
+                                <span th:case="'COMPLETED'" class="badge bg-secondary">Завершено</span>
+                            </span>
+                    </td>
+                    <td>
+                        <button th:if="${booking.status.name() == 'ACTIVE'}"
+                                class="btn cancel-btn"
+                                th:onclick="'cancelBooking(' + ${booking.id} + ')'">
+                            Отменить
+                        </button>
+                        <span th:if="${booking.status.name() != 'ACTIVE'}" class="text-muted">—</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

@@ -18,7 +18,7 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByDate(LocalDate date);
     List<Booking> findByPhoneNumber(String phoneNumber);
-
+    List<Booking> findAll();
     List<Booking> findByDateAndPlaceType(LocalDate date, String placeType);
 
     @Query("SELECT b FROM Booking b WHERE " +
@@ -30,6 +30,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("startTime") LocalTime startTime,
             @Param("endTime") LocalTime endTime,
             @Param("placeType") String placeType);
+
+
 
     @Modifying
     @Transactional

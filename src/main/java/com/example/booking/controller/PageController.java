@@ -94,6 +94,28 @@ public class PageController {
         return "user";
     }
 
+    @GetMapping("/admin")
+    public String admin(Model model, HttpSession session) {
+        bookingRepository.updateExpiredBookings();
+        String phoneNumber = (String) session.getAttribute("login");
+        model.addAttribute("phoneNumber", phoneNumber);
+        List<Booking> bookings = bookingRepository.findAll();
+        List<Booking> sortedBookings = bookings.stream()
+                .sorted(Comparator
+                        .comparing(Booking::getStatus, Comparator.comparing(status -> {
+                            if (status == BookingStatus.ACTIVE) return 1;
+                            if (status == BookingStatus.COMPLETED) return 2;
+                            return 3;
+                        }))
+                        .thenComparing(Booking::getDate)
+                        .thenComparing(Booking::getStartTime)
+                )
+                .collect(Collectors.toList());
+
+        model.addAttribute("bookings", sortedBookings);
+        return "admin";
+    }
+
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);

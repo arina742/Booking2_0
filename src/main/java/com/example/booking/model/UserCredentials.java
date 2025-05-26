@@ -16,6 +16,10 @@ public class UserCredentials {
 
     @Column // Пароль обязателен
     private String password;
+
+    @Column(name = "is_admin")
+    private boolean isAdmin = false;
+
     public UserCredentials(){
         
     }
@@ -24,6 +28,10 @@ public class UserCredentials {
         this.login = login;
         this.password = password;
     }
+
+    public boolean isAdmin() { return isAdmin;}
+
+    public void setAdmin(boolean admin) { isAdmin = admin;}
 
     public void setId(int id) {
         this.id = id;

@@ -7,35 +7,36 @@
 <div th:replace="fragments/header :: header"></div>
 
 <main class="container">
-    <form action="/login" method="post">
-    <div class="login-form">
-        <!-- Переключатель между пользователем и администратором -->
-<!--        <div class="form-group switch-group">-->
-<!--            <label class="switch">-->
-<!--                <input type="checkbox" id="loginTypeToggle">-->
-<!--                <span class="slider round"></span>-->
-<!--            </label>-->
-<!--            <span id="loginTypeLabel">Вход для пользователя</span>-->
-<!--        </div>-->
 
-        <div class="form-group" id="log">
-            <input type="text" id="username" name="username" placeholder="Введите ваш номер телефона" required>
-        </div>
+        <form action="/login" method="post">
+            <div class="login-form">
+                <!-- Переключатель между пользователем и администратором -->
+                <div class="form-group switch-group">
+                    <label class="switch">
+                        <input type="checkbox" id="loginTypeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span id="loginTypeLabel">Вход для пользователя</span>
+                </div>
 
-        <div class="form-group" id="pass">
-            <input type="password" id="password" name="password" placeholder="Введите ваш пароль" required>
-        </div>
+                <div class="form-group" id="log">
+                    <input type="text" id="username" name="username" placeholder="Введите ваш номер телефона" required>
+                </div>
 
-        <button type="submit" class="button button-login">Войти</button>
-        <div class="register-link">
-            Еще не зарегистрированы? <a href="/registration">Создать аккаунт</a>
-        </div>
+                <div class="form-group" id="pass">
+                    <input type="password" id="password" name="password" placeholder="Введите ваш пароль" required>
+                </div>
 
-        <div th:if="${param.error}" class="error-message">
-            Неверный логин или пароль
-        </div>
-    </div>
-    </form>
+                <button type="submit" class="button button-login">Войти</button>
+                <div class="register-link">
+                    Еще не зарегистрированы? <a href="/registration">Создать аккаунт</a>
+                </div>
+
+                <div th:if="${param.error}" class="error-message">
+                    Неверный логин или пароль
+                </div>
+            </div>
+        </form>
 </main>
 
 
