@@ -20,11 +20,11 @@
     <div class="user-card">
         <div class="user-header">
             <h2>Бронирования пользователей</h2>
-
+        </div>
             <!-- Улучшенная панель поиска -->
             <div class="search-container">
                 <input type="text" id="searchInput" class="search-input"
-                       placeholder="Поиск по ID, номеру, дате, времени..."
+                       placeholder="Поиск по номеру, дате, времени..."
                        onkeyup="filterBookings()">
                 <button class="search-btn" onclick="filterBookings()">
                     <i class="bi bi-search"></i> Поиск
@@ -58,7 +58,6 @@
             <table class="table table-hover bookings-table" id="bookingsTable">
                 <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Номер</th>
                     <th>Дата</th>
                     <th>Время</th>
@@ -70,17 +69,17 @@
                 </thead>
                 <tbody>
                 <tr th:if="${bookings == null or bookings.isEmpty()}">
-                    <td colspan="8" class="text-center py-4 text-muted">
+                    <td colspan="7" class="text-center py-4 text-muted">
                         Нет активных бронирований
                     </td>
                 </tr>
 
-                <tr th:each="booking : ${bookings}" th:attr="data-booking-id=${booking.id}"
+                <tr th:each="booking : ${bookings}"
+                    th:attr="data-booking-id=${booking.id}"
                     class="booking-row"
                     th:data-status="${booking.status.name()}"
                     th:data-place-type="${#strings.toLowerCase(booking.placeType)}">
-                    <td th:text="'#' + ${booking.id}"></td>
-                    <td th:text="'#' + ${booking.phoneNumber}"></td>
+                    <td th:text="${booking.phoneNumber}"></td>
                     <td th:text="${#temporals.format(booking.date, 'dd.MM.yyyy')}"></td>
                     <td>
                         <span th:text="${#temporals.format(booking.startTime, 'HH:mm')} + '-' + ${#temporals.format(booking.endTime, 'HH:mm')}"></span>
@@ -109,7 +108,7 @@
                 Ничего не найдено. Попробуйте изменить параметры поиска.
             </div>
         </div>
-    </div>
+<!--    </div>-->
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
