@@ -47,17 +47,33 @@ public class AuthService {
         return userRepository.findByLogin(login);
     }
 
+//    public boolean register(String login, String password) {
+//        login = getFormatNumber(login);
+//
+//        if (userRepository.existsByLogin(login)) return false;
+//
+//        String hashPassword = argon2.hash(2, 65536, 1, password.toCharArray());
+//        UserCredentials newUser = new UserCredentials(login, hashPassword);
+//        userRepository.save(newUser);
+//        return true;
+//    }
     public boolean register(String login, String password) {
-        login = getFormatNumber(login);
+        try {
+            login = getFormatNumber(login);
 
-        if (userRepository.existsByLogin(login)) return false;
+            if (userRepository.existsByLogin(login)) {
+                return false;
+            }
 
-        String hashPassword = argon2.hash(2, 65536, 1, password.toCharArray());
-        UserCredentials newUser = new UserCredentials(login, hashPassword);
-        userRepository.save(newUser);
-        return true;
+            String hashPassword = argon2.hash(2, 65536, 1, password.toCharArray());
+            UserCredentials newUser = new UserCredentials(login, hashPassword);
+            userRepository.save(newUser);
+            return true;
+        } catch (Exception e) {
+            // Логирование ошибки
+            return false;
+        }
     }
-
     public String getFormatNumber(String login) {
         login = login.replaceAll("[^0-9]", "");
         if(login.length() == 10) {
