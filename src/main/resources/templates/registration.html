@@ -10,14 +10,6 @@
     <form action="/registration" method="post">
         <div class="login-form">
             <h1>Регистрация</h1>
-            <!-- Переключатель между пользователем и администратором -->
-<!--            <div class="form-group switch-group">-->
-<!--                <label class="switch">-->
-<!--                    <input type="checkbox" id="loginTypeToggle">-->
-<!--                    <span class="slider round"></span>-->
-<!--                </label>-->
-<!--                <span id="loginTypeLabel">Вход для пользователя</span>-->
-<!--            </div>-->
 
             <div class="form-group" id="log">
                 <input type="text" id="username" name="username" placeholder="Введите номер телефона" required>
@@ -32,13 +24,7 @@
             </div>
 
             <button type="submit" class="button button-login">Зарегистрироваться</button>
-            <!-- Вывод разных ошибок -->
-            <div th:if="${error == 'Пароли не совпадают!'}" class="error-message">
-                Пароли не совпадают!
-            </div>
-            <div th:if="${error == 'Пользователь с таким логином уже существует!'}" class="error-message">
-                Пользователь с таким логином уже существует!
-            </div>
+            <div th:if="${error != null}" class="error-message" th:text="${error}"></div>
         </div>
     </form>
 </main>
